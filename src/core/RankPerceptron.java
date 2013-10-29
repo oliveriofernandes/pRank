@@ -39,7 +39,7 @@ public class RankPerceptron extends PerceptronRule {
 		int count = 0;
 		
 		TreeMap<Integer, Double> sortedScoreItems;
-		TreeMap<Integer, Double> trainClassification;
+		TreeMap<Integer, Integer> trainClassification;
 		
 		do {
             hasError = false;
@@ -63,7 +63,7 @@ public class RankPerceptron extends PerceptronRule {
 		
 	}
 	
-	public boolean hasError(TreeMap<Integer, Double> sortedScoreItems,	TreeMap<Integer, Double> trainClassification) {
+	public boolean hasError(TreeMap<Integer, Double> sortedScoreItems,	TreeMap<Integer, Integer> trainClassification) {
 
 		double index = 0;
 		int numberEquals = 0;
@@ -75,7 +75,7 @@ public class RankPerceptron extends PerceptronRule {
 		
 		for (Map.Entry<Integer, Double> entry1 : sortedScoreItems.entrySet()){
 			
-			for (Map.Entry<Integer, Double> entry2 : trainClassification.entrySet()){
+			for (Map.Entry<Integer, Integer> entry2 : trainClassification.entrySet()){
 				if(entry1.getKey().equals(entry2.getKey())){
 					
 					if (entry1.getValue().equals(entry2.getValue())){
@@ -92,14 +92,14 @@ public class RankPerceptron extends PerceptronRule {
 				
 	}
 
-	public TreeMap<Integer, Double> makeOrderedMap(double[][]example){
+	public TreeMap<Integer, Integer> makeOrderedMap(double[][]example){
 		
 		// This map is formed by the documents and its classification
 		// accordingly by the given the train positions
-		Map<Integer, Double> posItems = new HashMap<Integer, Double>();
+		Map<Integer, Integer> posItems = new HashMap<Integer, Integer>();
 				
 		for (int i = 0; i < example.length; i++) {
-			double pos = example[i][example[i].length - 1]; // pos : position of the document
+			int pos = (int) example[i][example[i].length - 1]; // pos : position of the document
 			System.out.println(pos);
 			posItems.put(i, pos); // train examples put in a map
 		}
@@ -109,7 +109,7 @@ public class RankPerceptron extends PerceptronRule {
 		PositionComparator posComparator = new PositionComparator(posItems);
 
 		// Sorted map contains the correct classifications of the documents
-		TreeMap<Integer, Double> orderedMap = new TreeMap<Integer, Double>(posComparator);
+		TreeMap<Integer, Integer> orderedMap = new TreeMap<Integer, Integer>(posComparator);
 		orderedMap.putAll(posItems);
 		
 		return orderedMap;
@@ -163,16 +163,16 @@ public class RankPerceptron extends PerceptronRule {
 
 	private void adjustWeights(TreeMap<Integer, Double> sortedScoreItems, double[][] example) {
 
-		 TreeMap<Integer, Double> correctClassification = makeOrderedMap(example);
+		 TreeMap<Integer, Integer> correctClassification = makeOrderedMap(example);
 		
 		//List which contains the correct classification (train examples)
-		List<Entry<Integer, Double>> correctPositions = new ArrayList<>();
+		List<Entry<Integer, Integer>> correctPositions = new ArrayList<>();
 
 		//List contains the trained classification (classification by its computed activations)
 		List<Entry<Integer, Double>> trainedPositions = new ArrayList<>();
 
 		//Put the correct sorted documents in a list 
-		for (Map.Entry<Integer, Double> entry : correctClassification.entrySet()){
+		for (Map.Entry<Integer, Integer> entry : correctClassification.entrySet()){
 			correctPositions.add(entry);
 		}
 		double index = 0;
@@ -182,8 +182,8 @@ public class RankPerceptron extends PerceptronRule {
 			trainedPositions.add(entry);
 		}
 		
-		Entry<Integer, Double> Xi;
-		Entry<Integer, Double> Xj;
+		Entry<Integer, Integer> Xi;
+		Entry<Integer, Integer> Xj;
 		
 		
 		for (int i = 0; i < correctPositions.size(); i++) {
@@ -204,7 +204,7 @@ public class RankPerceptron extends PerceptronRule {
 		}
 	}
 
-	public boolean hasInvertion(Entry<Integer, Double> Xi, Entry<Integer, Double> Xj, 
+	public boolean hasInvertion(Entry<Integer, Integer> Xi, Entry<Integer, Integer> Xj, 
 			List<Entry<Integer, Double>> trainedRelativePositions) {
 
 		boolean catchI = false;

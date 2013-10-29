@@ -16,8 +16,8 @@ public class CSR {
 	   Its size is decided by the size of the matrix */
 	public int rowPtr[];
 	
-	int numOfRows;
-	int numOfCol;
+	public int numOfRows;
+	public int numOfCol;
 	/* This constructor takes a effective sparse matrix 
 	 * and convert it to a CRS object */
 
@@ -137,5 +137,4 @@ public class CSR {
 			System.out.print(rowPtr[i] + ":");
 		}
 	}
-	
 }

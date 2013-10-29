@@ -5,8 +5,8 @@ import java.util.Map;
 
 public class PositionComparator implements Comparator<Integer> {
 
-    Map<Integer, Double> base;
-    public PositionComparator (Map<Integer, Double> base) {
+    Map<Integer, Integer> base;
+    public PositionComparator (Map<Integer, Integer> base) {
         this.base = base;
     }
 
