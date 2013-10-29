@@ -58,6 +58,11 @@ public class Loader {
 		
 	}
 
+	
+	public static void getExampleDocuments(){
+		
+	}
+	
 	public double [][] getMatrix(){
 		return this.matrix;
 	}
