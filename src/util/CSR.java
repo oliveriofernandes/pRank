@@ -22,7 +22,7 @@ public class CSR {
 	 * and convert it to a CRS object */
 
 	public CSR (double [][] matrix){
-		int totalNonZeros = 0; // total non zero numbers presented in the matrix
+		int totalNonZeros = 0; // total of non zero numbers presented in the matrix
 		int index = 0;
 		
 		//Get number of rows in the matrix
@@ -76,7 +76,7 @@ public class CSR {
 	}
 	
 	/*takes a vector x and returns the product of the matrix stored in the CRS object with x.*/
-	public double dotProduct(double[] w){
+	public double dotProduct(double[] w, int line){
 		//create vector to save product
 		double dotProduct = 0;
 
