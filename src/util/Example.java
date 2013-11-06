@@ -1,28 +1,31 @@
 package util;
 
-import java.util.HashMap;
 
 public class Example {
 
-	private HashMap<Integer, Integer> docNumber;
 	public CSR documents;
-	private HashMap<Integer, Integer> rank;
 	
 	public Example(CSR documents) {
 		this.documents = documents;
 	}
 
-	public int getRank(int line) {
-		return rank.get(line);
+	/**
+	 * 
+	 * @param line
+	 * @return
+	 */
+	public double getRank(int line) {
+		
+		//Index where starts next line
+		int rowPtr = documents.rowPtr[line+1];
+		
+		//Index where the line above ends (column target)
+		int j = documents.colIndexes[rowPtr]-1;
+		
+		
+		return documents.getElement(line,j);
+		
 	}
 
-	public void setRank(HashMap<Integer, Integer> rank) {
-		this.rank = rank;
-	}
-	
-	public int getDocNumber(int line) {
-		return docNumber.get(line);
-	}
-	
 
 }

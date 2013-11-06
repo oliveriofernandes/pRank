@@ -1,6 +1,5 @@
 package util;
 
-
 /** @author oliverio
  *
  *Comprises the Row Storage Storage format for sparse matrix */
