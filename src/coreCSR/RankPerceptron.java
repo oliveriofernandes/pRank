@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
-import util.CSR;
+import util.CRS;
 import util.Example;
 import util.comparators.ActivationComparator;
 import util.comparators.PositionComparator;
@@ -81,7 +81,7 @@ public class RankPerceptron {
 		int numOfCol = example.getValue().documents.numOfCol;
 		int numOfRows = example.getValue().documents.numOfRows;
 		
-		CSR doc = example.getValue().documents;
+		CRS doc = example.getValue().documents;
 		for (int i = 0; i < numOfRows; i++) {
 			activation = 0;
 			for (int j = 0; j < numOfCol; j++) {
@@ -203,8 +203,8 @@ public class RankPerceptron {
 					
 					int lineI = Xi.getKey();
 					int lineJ = Xj.getKey();
-					CSR docI = examples.documents;
-					CSR docJ = examples.documents;
+					CRS docI = examples.documents;
+					CRS docJ = examples.documents;
 					
 					for (int k = 0; k < weights.length; k++) {
 						

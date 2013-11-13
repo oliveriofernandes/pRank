@@ -6,7 +6,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import util.CSR;
+import util.CRS;
 import util.Example;
 import coreCSR.RankPerceptron;
 
@@ -23,8 +23,8 @@ public class RankingPerceptronTestCRS {
 		
 		
 		examples = new HashMap<Integer,Example>();
-		examples.put(1, new Example(new CSR(docsA)));
-		examples.put(2, new Example(new CSR(docsB)));
+		examples.put(1, new Example(new CRS(docsA)));
+		examples.put(2, new Example(new CRS(docsB)));
 		
 		
 	}	

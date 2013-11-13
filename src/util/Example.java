@@ -3,14 +3,13 @@ package util;
 
 public class Example {
 
-	public CSR documents;
+	public CRS documents;
 	
-	public Example(CSR documents) {
+	public Example(CRS documents) {
 		this.documents = documents;
 	}
 
 	/**
-	 * 
 	 * @param line
 	 * @return
 	 */

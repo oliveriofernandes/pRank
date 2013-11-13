@@ -1,28 +1,30 @@
 package util;
 
+import java.lang.instrument.ClassDefinition;
+
 /** @author oliverio
  *
  *Comprises the Row Storage Storage format for sparse matrix */
 
-public class CSR {
+public class CRS {
 	//The values of nonzero elements of the sparse matrix
 	public double [] values;
 	
-	//The column indices of the elements in the value vector
+	//The column indices of the elements in the 'value' vector
 	public int [] colIndexes;
 	
-	/* Localizations in the 'values' vector that starts each row.
-	   Its size is decided by the size of the matrix */
+	/* Localizations, in the 'values' vector, in which it starts 
+	 * each row. Its size is decided by the size of the matrix */
 	public int rowPtr[];
 	
 	public int numOfRows;
 	public int numOfCol;
+
 	/* This constructor takes a effective sparse matrix 
 	 * and convert it to a CRS object */
-
-	public CSR (double [][] matrix){
-		int totalNonZeros = 0; // total of non zero numbers presented in the matrix
-		int index = 0;
+	public CRS (double [][] matrix){
+		int totalNonZeros = 0; // total of nonzero numbers presented in the matrix
+		int index = 0; //index used for filling the vectos (values, colIndex and rowPtr)
 		
 		//Get number of rows in the matrix
 		numOfRows = matrix.length;
@@ -71,23 +73,24 @@ public class CSR {
 			}
 		}
 		rowPtr[k] = index;
-		
 	}
 	
 	/*takes a vector x and returns the product of the matrix stored in the CRS object with x.*/
-	public double dotProduct(double[] w, int line){
+	public double dotProduct(CRS weight, int line){
 		//create vector to save product
 		double dotProduct = 0;
 
-		for (int i = 0; i < numOfCol; i++){
-			for( int j = rowPtr[i]; j < rowPtr[i+1]; j++){
-				dotProduct += values[j] * w[colIndexes[j]];
+		// Find where the row starts
+		int rowStart = rowPtr[line];
 
-			}
-		}
+		// Find where the next row starts
+		int nextRowStarts = rowPtr[line+1];
 
+		
+		for( int i = rowStart; i < nextRowStarts; i++)
+				dotProduct+= values[i] * weight.getElement(0, colIndexes[i]);
+		
 		return dotProduct;
-
 	}
 	
 	
@@ -95,18 +98,18 @@ public class CSR {
 		public double getElement(int i, int j){
 
 			// Find where the row starts
-			int rowStart = rowPtr[i];
+			int startRow = rowPtr[i];
 
 			// Find where the next row starts
-			int nextRowStarts = rowPtr[i+1];
+			int nextStartRow = rowPtr[i+1];
 
 			// Scan the column indices of entries in row i
-			for(int k = rowStart; k < nextRowStarts; k++){
+			for(int k = startRow; k < nextStartRow; k++){
 				// if j is the column index of a non-zero, then return it
 				if(colIndexes[k] == j)
 					return values[k];
 
-				// if we have passed j, then entry (i, j) must be a zero
+				// if it has passed j, then entry (i,j) must be a zero
 				if(colIndexes[k] > j)
 					return 0;
 			}
@@ -123,17 +126,19 @@ public class CSR {
 		for (int i = 0; i < values.length; i++) {
 			System.out.print(values[i] +":");
 		}
-		System.out.println("");
+		System.out.println();
 		
 		System.out.println("Index column vector:");
 		for (int i = 0; i < colIndexes.length; i++) {
 			System.out.print(colIndexes[i] + ":");
 		}
-		System.out.println("");
+		System.out.println();
 		//Fill the rowPtr vector
 		System.out.println("rowPtr vector:");
 		for (int i = 0; i < rowPtr.length; i++) {
 			System.out.print(rowPtr[i] + ":");
 		}
+		System.out.println();
+		System.out.println("----");
 	}
 }
