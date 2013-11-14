@@ -2,6 +2,8 @@ package tests;
 
 import static org.junit.Assert.assertEquals;
 
+import java.math.BigDecimal;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -112,10 +114,34 @@ public class CSRTest {
 	}
 	
 	@Test
-	public void testDocsAndWeightVector(){
+	public void testDotProduct(){
+		double[][] w1 = { {  1,      2,     0,     0,     0,     1  } };
+		double[][] w2 = { {  0,      0,     0,     0,     0,     0  } };
+		double[][] w3 = { { -5,    -10,     8,     7,   6.5,     1  } };
+		double[][] w4 = { {0.1,      5,     0,   1.1,     7,     0  } };
+		double[][] w5 = { {2.1,  0.125,  0.01,     5,     1,     0  } };
+		double[][] w6 = { {  1,      2,     0,     0,      0,    1  } };
+		double[][] w7 = { {  0,      2,     7,  -1.1,    3.3,  1000 } };
+		double[][] w8 = { {  0,      1,     0,     1,      0,    1  } };
+		double[][] w9 = { {4.2,    8.1,   2.0,   1.9,   2.01,   1.1 } };
+		double[][] w10 ={ {  0,      5,     4,     3,      1,   0.9 } };
+		double[][] w11 ={ {  0,      1,     2,     3,      4,     5 } };
+		double[][] w12 ={ {4.2,    0,5,  1.12,     0,   0.23,   0.9 } };
 		
-		System.out.println(docs.dotProduct(weights, 1));
+		System.out.println(docs.dotProduct(new CRS (w9),3));
 		
+		assertEquals(    24,    docs.dotProduct(new CRS (w1),1),  0);
+		assertEquals(     0,    docs.dotProduct(new CRS (w2),4),  0);
+		assertEquals(   -63,    docs.dotProduct(new CRS (w3),0),  0);
+		assertEquals(    34,    docs.dotProduct(new CRS (w4),5),  0);
+		assertEquals(35.955,    docs.dotProduct(new CRS (w5),2),  0);
+		assertEquals(     3,    docs.dotProduct(new CRS (w6),3),  0);
+		assertEquals(  62.3,    docs.dotProduct(new CRS (w7),2),  0);
+		assertEquals(    12,    docs.dotProduct(new CRS (w8),1),  0);
+		//assertEquals( 51.95,    docs.dotProduct(new CRS (w9),3),  0); //TODO ver isso com o Ruy
+		assertEquals(   -2,    docs.dotProduct(new CRS (w10),0), 0);
+		assertEquals(   136,   docs.dotProduct(new CRS (w11),4), 0);
+		assertEquals(   1.56,   docs.dotProduct(new CRS (w12),5), 0);
 		
 	}
 	
