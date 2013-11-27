@@ -126,9 +126,7 @@ public class CSRTest {
 		double[][] w9 = { {4.2,    8.1,   2.0,   1.9,   2.01,   1.1 } };
 		double[][] w10 ={ {  0,      5,     4,     3,      1,   0.9 } };
 		double[][] w11 ={ {  0,      1,     2,     3,      4,     5 } };
-		double[][] w12 ={ {4.2,    0,5,  1.12,     0,   0.23,   0.9 } };
-		
-		System.out.println(docs.dotProduct(new CRS (w9),3));
+		double[][] w12 ={ {4.2,    0.5,  1.12,     0,   0.23,   0.9 } };
 		
 		assertEquals(    24,    docs.dotProduct(new CRS (w1),1),  0);
 		assertEquals(     0,    docs.dotProduct(new CRS (w2),4),  0);

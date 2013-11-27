@@ -1,5 +1,6 @@
 package util;
 
+/** @author Olivério */
 
 public class Example {
 
@@ -9,8 +10,7 @@ public class Example {
 		this.documents = documents;
 	}
 
-	/**
-	 * @param line
+	/** @param line
 	 * @return
 	 */
 	public double getRank(int line) {
@@ -21,10 +21,6 @@ public class Example {
 		//Index where the line above ends (column target)
 		int j = documents.colIndexes[rowPtr]-1;
 		
-		
 		return documents.getElement(line,j);
-		
 	}
-
-
 }

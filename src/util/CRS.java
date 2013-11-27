@@ -1,6 +1,5 @@
 package util;
 
-import java.lang.instrument.ClassDefinition;
 
 /** @author oliverio
  *
@@ -88,7 +87,7 @@ public class CRS {
 
 		
 		for( int i = rowStart; i < nextRowStarts; i++)
-				dotProduct+= values[i] * weight.getElement(0, colIndexes[i]);
+			dotProduct+= values[i] * weight.getElement(0, colIndexes[i]);
 		
 		return dotProduct;
 	}

@@ -87,7 +87,7 @@ public class RankPerceptron {
 			for (int j = 0; j < numOfCol; j++) {
 				activation+= doc.getElement(i, j);
 			}
-			scoreItems.put(example.getValue().getDocNumber(i), activation);
+//TODO refactoring this method		//scoreItems.put(example.getValue().getDocNumber(i), activation);
 		}
 		
 		//For each example, compute the activation of each document and puts in the map.
@@ -121,10 +121,10 @@ public class RankPerceptron {
 		int numOfRows = example.documents.numOfRows;
 				
 		for (int i = 0; i < numOfRows; i++) {
-			posItems.put(example.getDocNumber(i),example.getRank(i));
+//TODO refactoring this method		posItems.put(example.getDocNumber(i),example.getRank(i));
 		}
 		
-//		for (int i = 0; i < length; i++) {
+//		for (int 	i = 0; i < length; i++) {
 //			Example ex = examples.get(i);
 //			posItems.put(ex.docNumber, ex.rank); // train examples put in a map
 //		}
