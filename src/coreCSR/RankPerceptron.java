@@ -20,15 +20,28 @@ import util.comparators.PositionComparator;
 public class RankPerceptron {
 
 	// Document list contending the examples
-	public HashMap<Integer,Example> examples;
+	public List<Example> examples;
 	public double[] weights;
 	public int maxCount;
 
-	public RankPerceptron(HashMap<Integer,Example> examples, int maxCount) {
+	public RankPerceptron(List<Example> examples, int maxCount) {
 		this.examples = examples;
 		this.maxCount = maxCount;
-	}
+		
+		int maxLength = examples.get(0).offerings.numOfCol;
+		int maxTemp;
 
+		//In order to initialize the weight vector. It must have the largest length of attribute vector of all examples
+		for (Example example : examples){
+			maxTemp = example.offerings.numOfCol;
+			if (maxLength < maxTemp)
+				maxLength = maxTemp;
+		}
+		
+		//initialize the weight vector with the largest length of attribute vector of all examples
+		weights = new double[maxLength];
+	}
+	
 	public void training() {
 
 		boolean hasError;
@@ -43,17 +56,17 @@ public class RankPerceptron {
             hasError = false;
             count++;
             
-            for(Entry<Integer, Example> entry : examples.entrySet()){
+            for(Example example : examples){
             	
             	//Build a TreeMap (sorted map), by activations, for each example
-            	sortedScoreItems = rankByActivation(entry);
+            	sortedScoreItems = rankByActivation(example);
             	//Build a TreeMap (sorted map) considering the real order of the example 
-            	trainClassification = makeOrderedMap(entry.getValue());
+            	trainClassification = makeOrderedMap(example);
             	
             	if (hasError(sortedScoreItems,trainClassification)){
                     
             		hasError = true;
-            		adjustWeights(sortedScoreItems, entry.getValue());	
+            		adjustWeights(sortedScoreItems, example);	
             	}
             }
 		}while( (hasError == true) && (count < this.maxCount) );    
@@ -65,7 +78,7 @@ public class RankPerceptron {
 	 * @param examples
 	 * @return sortedScoreItems
 	 */
-	public TreeMap<Integer, Double> rankByActivation(Entry<Integer, Example> example) {
+	public TreeMap<Integer, Double> rankByActivation(Example example) {
 
 		// Map containing the scored items by activation
 		Map<Integer, Double> scoreItems = new HashMap<Integer, Double>();
@@ -78,16 +91,16 @@ public class RankPerceptron {
 		double activation;
 
 		//Qtd of documents in this example
-		int numOfCol = example.getValue().documents.numOfCol;
-		int numOfRows = example.getValue().documents.numOfRows;
+		int numOfCol = example.offerings.numOfCol;
+		int numOfRows = example.offerings.numOfRows;
 		
-		CRS doc = example.getValue().documents;
+		CRS doc = example.offerings;
 		for (int i = 0; i < numOfRows; i++) {
 			activation = 0;
 			for (int j = 0; j < numOfCol; j++) {
 				activation+= doc.getElement(i, j);
 			}
-//TODO refactoring this method		//scoreItems.put(example.getValue().getDocNumber(i), activation);
+//TODO re-implementing		scoreItems.put(example.get(i), activation);
 		}
 		
 		//For each example, compute the activation of each document and puts in the map.
@@ -118,7 +131,7 @@ public class RankPerceptron {
 		// by CLASSIFICATION
 		PositionComparator posComparator = new PositionComparator(posItems);
 		
-		int numOfRows = example.documents.numOfRows;
+		int numOfRows = example.offerings.numOfRows;
 				
 		for (int i = 0; i < numOfRows; i++) {
 //TODO refactoring this method		posItems.put(example.getDocNumber(i),example.getRank(i));
@@ -203,8 +216,8 @@ public class RankPerceptron {
 					
 					int lineI = Xi.getKey();
 					int lineJ = Xj.getKey();
-					CRS docI = examples.documents;
-					CRS docJ = examples.documents;
+					CRS docI = examples.offerings;
+					CRS docJ = examples.offerings;
 					
 					for (int k = 0; k < weights.length; k++) {
 						

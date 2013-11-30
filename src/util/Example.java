@@ -1,26 +1,41 @@
 package util;
 
-/** @author Olivério */
+import java.util.HashMap;
+import java.util.Map;
+
+/** @author Olivério 
+ * This class corresponds an example instance which will be formed the train data set.
+ * The train set is represented by the set S = {(Xi,Yi)} where the Xi represents the features
+ * in each example (here is documents attribute), the Yi corresponds the labels for each
+ * offering (document, item and so on). The rId is the identifier of each example (a set of documents
+ * is associated with a query id, for example) and the Map of labels corresponds of an association
+ * of each offering identifier and its respective label (score) given in the data set  
+ * */
 
 public class Example {
 
-	public CRS documents;
+	public CRS offerings;
+	public int rId;
+	Map<Integer,Double> labels;
 	
-	public Example(CRS documents) {
-		this.documents = documents;
+	public Example(CRS documents,int rId) {
+		this.offerings = documents;
+		this.rId = rId;
+		this.labels = new HashMap<Integer,Double>(100);
 	}
+	
+	
 
-	/** @param line
-	 * @return
-	 */
-	public double getRank(int line) {
-		
-		//Index where starts next line
-		int rowPtr = documents.rowPtr[line+1];
-		
-		//Index where the line above ends (column target)
-		int j = documents.colIndexes[rowPtr]-1;
-		
-		return documents.getElement(line,j);
-	}
+//	/** @param line
+//	 * @return the last column in an specific line - It can be the score, rank, etc.: depends on the dataset. */
+//	public double getRank(int line) {
+//		
+//		//Index where starts next line
+//		int rowPtr = documents.rowPtr[line+1];
+//		
+//		//Index where the line above ends (column target)
+//		int j = documents.colIndexes[rowPtr]-1;
+//		
+//		return documents.getElement(line,j);
+//	}
 }

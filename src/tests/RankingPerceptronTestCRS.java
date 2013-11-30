@@ -1,6 +1,7 @@
 package tests;
 
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -11,28 +12,33 @@ import util.Example;
 import coreCSR.RankPerceptron;
 
 public class RankingPerceptronTestCRS {
-	double docsA[][] ={ {5.0,1.0,3.0,1.0,2.0,3.0},{7.0,3.0,9.0,9.0,4.0,5.0},{2.0,9.0,5.0,2.0,6.0,1.0},
-	{3.0,4.0,1.0,8.0,9.0,2.0}, {8.0,1.0,3.0,4.0,2.0,4.0} };
-	
-	double docsB[][] ={ {3.0,9.0,4.0,8.0,7.0,3.0}, {7.0,9.0,1.0,7.0,2.0,2.0}, {1.0,7.0,5.0,3.0,1.0,1.0} };
-	
-	HashMap<Integer,Example> examples;
+		
+	List<Example> examples;
 	
 	@Before
 	public void settings(){
+	
+		double docsA[][] ={ {5.0,1.0,3.0,1.0,2.0,3.0},{7.0,3.0,9.0,9.0,4.0,5.0},{2.0,9.0,5.0,2.0,6.0,1.0},
+				{3.0,4.0,1.0,8.0,9.0,2.0}, {8.0,1.0,3.0,4.0,2.0,4.0} };
+
+		double docsB[][] ={ {3.0,9.0,4.0,8.0,7.0,3.0}, {7.0,9.0,1.0,7.0,2.0,2.0}, {1.0,7.0,5.0,3.0,1.0,1.0} };
+		Example exampleA;
+		Example exampleB;
 		
 		
-		examples = new HashMap<Integer,Example>();
-		examples.put(1, new Example(new CRS(docsA)));
-		examples.put(2, new Example(new CRS(docsB)));
+		exampleA = new Example(new CRS(docsA),1);
+		exampleB = new Example(new CRS(docsB),2);
 		
+		examples = new ArrayList<Example>();
+		
+		examples.add(exampleA);
+		examples.add(exampleB);
 		
 	}	
 	@Test
 	public void execute(){
 		
 		RankPerceptron rp = new RankPerceptron(examples, 100);
-		
 		Assert.assertEquals(rp.weights.length, 6);
 		double[] weights = {1.0, 2.0, 3.0, 4.0, 5.0};
 		rp.weights = weights;

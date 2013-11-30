@@ -2,8 +2,11 @@ package util;
 
 
 /** @author oliverio
- *
- *Comprises the Row Storage Storage format for sparse matrix */
+ * 
+ * Comprises the Row Storage Storage format for sparse matrix. This data structure 
+ * was created only for storing the features attribues of the examples. In order to 
+ * store information in respect request id's, score relevance and so on, there is 
+ * Example class. This CRS class is a composition peace of the Example class. **/
 
 public class CRS {
 	//The values of nonzero elements of the sparse matrix

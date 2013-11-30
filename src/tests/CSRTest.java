@@ -2,8 +2,6 @@ package tests;
 
 import static org.junit.Assert.assertEquals;
 
-import java.math.BigDecimal;
-
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -99,15 +97,6 @@ public class CSRTest {
 		assertEquals(docs.getElement(5, 4), 2,  0); // i=5; j=4; aij = 2
 		assertEquals(docs.getElement(5, 5), -1, 0); // i=5; j=5; aij = -1
 	/* END: Testing the return value of all elements of the matrix */	
-		
-//		System.out.println("rowPtr vector:");
-//		for (int i = 0; i < docs.rowPtr.length; i++) 
-//			System.out.print(" " + docs.rowPtr[i]);
-//		System.out.println();
-//		System.out.println("values vector:");
-//		for (int i = 0; i < docs.values.length; i++) {
-//			System.out.print(" " + docs.values[i]);
-//		}
 		
 		docs.printCRSMatrix();
 		
