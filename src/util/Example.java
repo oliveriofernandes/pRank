@@ -24,6 +24,11 @@ public class Example {
 		this.labels = new HashMap<Integer,Double>(100);
 	}
 	
+	public Example(CRS documents,int rId, Map<Integer,Double> labels) {
+		this.offerings = documents;
+		this.rId = rId;
+		this.labels = labels;
+	}
 	
 
 //	/** @param line

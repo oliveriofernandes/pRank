@@ -11,112 +11,142 @@ import java.util.Scanner;
 
 public class LoaderMSLR {
 
-	
 	public static void main(String[] args) throws FileNotFoundException {
-	
-		String path = System.getProperty("user.dir").concat(
-				File.separator+"datasets"+File.separator+"MSLR-WEB10K"+
-						File.separator+"Fold1"+File.separator+"sampleTrain.txt");
 
-		LoaderMSLR.getDataset(path);
+		String path = System.getProperty("user.dir").concat(
+				File.separator + "datasets" + File.separator + "MSLR-WEB10K" + File.separator + "Fold1" + File.separator
+						+ "sampleTrain.txt");
+
+		List<Example> examples  = LoaderMSLR.getDataset(path);
 		
+		for (Example example : examples) {
+			System.out.println("qId = " + example.rId);
+			System.out.println("indexes:");
+			for (int i = 0; i < example.offerings.colIndexes.length; i++) {
+				System.out.print(" " + example.offerings.colIndexes[i]);
+				
+			}
+			//System.out.println("values:");
+			//for (int i = 0; i < example.offerings.colIndexes.length; i++) {
+			//System.out.print(" " + example.offerings.values[i]);
+			//}
+		}
+
 	}
-	
-	public static void getDataset(String path ) throws FileNotFoundException{
-		
+
+	public static List<Example> getDataset(String path) throws FileNotFoundException {
 		int label;
 		int qId = 0;
 		int qIdTemp;
-		Map<Integer,List<Map<Integer,Double>>> example = new HashMap<Integer, List<Map<Integer,Double>>>(); 
+		Map<Integer, List<Map<Integer, Double>>> mapExample = new HashMap<Integer, List<Map<Integer, Double>>>();
 		Scanner scanner = new Scanner(new File(path));
-		
+
 		String[] strTokens;
-		qIdTemp = qId; 
+		qIdTemp = qId;
 		while (scanner.hasNextLine()) {
-				
+
 			// Get the label value in the token
 			label = scanner.nextInt();
-				
-			// Get the  qId in the line
+
+			// Get the qId in the line
 			qIdTemp = Integer.parseInt(scanner.next().split(":")[1]);
-				
-			//Catches the relationship (qId and Xi) presented in the document.
-			if (qIdTemp == qId){
+
+			// Catches the relationship (qId and Xi) presented in the document.
+			if (qIdTemp == qId) {
 				strTokens = scanner.nextLine().replace(" ", ":").split(":");
-				Map<Integer,Double> map = new HashMap<Integer,Double>();
-				for (int i = 1; i < strTokens.length-1; i++) {
+				Map<Integer, Double> map = new HashMap<Integer, Double>();
+				for (int i = 1; i < strTokens.length - 1; i++) {
 					int indx = Integer.parseInt(strTokens[i]);
-					double value = Double.parseDouble(strTokens[i+1]);
-					map.put(indx,value );
+					double value = Double.parseDouble(strTokens[i + 1]);
+					map.put(indx, value);
 					i++;
 				}
 				map.put(-1, new Double(label));
-				example.get(qId).add(map);
+				mapExample.get(qId).add(map);
 			}
-				
-			else{
-				qId = qIdTemp; 
+
+			else {
+				qId = qIdTemp;
 				strTokens = scanner.nextLine().replace(" ", ":").split(":");
-				Map<Integer,Double> map = new HashMap<Integer,Double>();
-				for (int i = 1; i < strTokens.length-1; i++) {
+				Map<Integer, Double> map = new HashMap<Integer, Double>();
+				for (int i = 1; i < strTokens.length; i++) {
 					int indx = Integer.parseInt(strTokens[i]);
-					double value = Double.parseDouble(strTokens[i+1]);
-					map.put(indx,value );
+					double value = Double.parseDouble(strTokens[i + 1]);
+					map.put(indx, value);
 					i++;
 				}
 				map.put(-1, new Double(label));
-				List<Map<Integer,Double>> listMaps = new ArrayList<Map<Integer,Double>>();
+				List<Map<Integer, Double>> listMaps = new ArrayList<Map<Integer, Double>>();
 				listMaps.add(map);
-				example.put(qId,listMaps);
+				mapExample.put(qId, listMaps);
 			}
 		}
 		scanner.close();
-		extractAttributes(example);
-		}
-			
-	private static void extractAttributes(Map<Integer,List<Map<Integer,Double>>> example) {
-	
-		for (Entry<Integer, List<Map<Integer,Double>>> entry : example.entrySet()) {
-		
+		return extractAttributes(mapExample);
+	}
+
+	private static List<Example> extractAttributes(Map<Integer, List<Map<Integer, Double>>> mapExample) {
+
+		List<Example> examples = new ArrayList<Example>();
+		for (Entry<Integer, List<Map<Integer, Double>>> entry : mapExample
+				.entrySet()) {
+			// array list will receive the indexes for filling the colIndexes
+			// vector for the CRS attribute of each example
 			List<Integer> indx = new ArrayList<Integer>();
+			// array list will receive the values for filling the values vector
+			// for the CRS attribute of each example
 			List<Double> valuesList = new ArrayList<Double>();
-			List<Integer> rowPtrValue  = new ArrayList<Integer>();
-			//Stores labels of each row 
-			List<Integer> labels  = new ArrayList<Integer>();
-			boolean timeArrays = true;
-			
-			for (Map<Integer, Double> entity : entry.getValue()) {
-				if (timeArrays){
-					
-					for (Entry<Integer, Double> subEntryint > entity.g) {
-						indx.add(Integer.parseInt(vals[i]));
-						valuesList.add(Double.parseDouble(vals[i+1]));	
+			// array list will receive the rowPtrValue for filling the
+			// rowPtrValue vector for the CRS attribute of each example
+			List<Integer> rowPtrValue = new ArrayList<Integer>();
+			// Map contained the labels of each example - the Key is the line
+			// number and value is the corresponding label
+			Map<Integer, Double> labels = new HashMap<Integer, Double>();
+			// Stores labels of each row
+			boolean timeArrays;
+			int countLine = 0;
+
+			// Identifies the id of the query document
+			int qId = entry.getKey();
+
+			// Performing at each line of data set
+			for (Map<Integer, Double> dsLine : entry.getValue()) {
+				// Flag which indicates
+				timeArrays = true;
+				labels.put(countLine++, dsLine.remove(-1));
+
+				// Fills the fields of indx, values and rowPtw list of each line
+				// on the data set
+				for (Entry<Integer, Double> attributes : dsLine.entrySet()) {
+					indx.add(attributes.getKey());
+					valuesList.add(attributes.getValue());
+					if (timeArrays) {
+						rowPtrValue.add(valuesList.size() - 1);
+						timeArrays = false;
 					}
-					
-					rowPtrValue.add(valuesList.size() - vals.length);
-				}
-				else
-				{
-					labels.add((Integer)obj);
 				}
 			}
-			
-			//The values of nonzero elements of the sparse matrix
-			double [] values = new double[valuesList.size()];
-			
-			//The column indices of the elements in the 'value' vector
-			int [] colIndexes = new int [valuesList.size()];
-			
-			int rowPtr[] = new int [rowPtrValue.size()];
-					
+
+			// The values of nonzero elements of the sparse matrix
+			double[] values = new double[valuesList.size()];
+			// The column indices of the elements in the 'value' vector
+			int[] colIndexes = new int[valuesList.size()];
+			// The rowPtr of the elements in the 'rowPtr' vector
+			int rowPtr[] = new int[rowPtrValue.size()];
+
 			for (int i = 0; i < valuesList.size(); i++) {
 				values[i] = valuesList.get(i);
-				colIndexes[i] = indx.get(i);		
+				colIndexes[i] = indx.get(i);
 			}
-			
+
 			for (int i = 0; i < rowPtr.length; i++) {
 				rowPtr[i] = rowPtrValue.get(i);
 			}
+
+			CRS csr = new CRS(values, colIndexes, rowPtr);
+			Example example = new Example(csr, qId, labels);
+			examples.add(example);
 		}
+		return examples;
 	}
 }
