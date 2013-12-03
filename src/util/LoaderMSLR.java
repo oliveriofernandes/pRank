@@ -2,7 +2,6 @@ package util;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -28,11 +27,10 @@ public class LoaderMSLR {
 		int label;
 		int qId = 0;
 		int qIdTemp;
-		Map<Integer,List<String[]>> example = new HashMap<Integer,List<String[]>>();
+		Map<Integer,List<Map<Integer,Double>>> example = new HashMap<Integer, List<Map<Integer,Double>>>(); 
 		Scanner scanner = new Scanner(new File(path));
 		
 		String[] strTokens;
-		StringBuilder strBuilder = new StringBuilder();
 		qIdTemp = qId; 
 		while (scanner.hasNextLine()) {
 				
@@ -44,35 +42,41 @@ public class LoaderMSLR {
 				
 			//Catches the relationship (qId and Xi) presented in the document.
 			if (qIdTemp == qId){
-				String str [] = scanner.nextLine().split(":");
-				strBuilder.append(str.toString());
-				strBuilder.append(label);
-				
-			//	example.get(qId).add(strBuilder.toString());
-			//	example.get(qId).add(strTokens);
-			//	example.get(qId).add(label);
+				strTokens = scanner.nextLine().replace(" ", ":").split(":");
+				Map<Integer,Double> map = new HashMap<Integer,Double>();
+				for (int i = 1; i < strTokens.length-1; i++) {
+					int indx = Integer.parseInt(strTokens[i]);
+					double value = Double.parseDouble(strTokens[i+1]);
+					map.put(indx,value );
+					i++;
+				}
+				map.put(-1, new Double(label));
+				example.get(qId).add(map);
 			}
 				
 			else{
 				qId = qIdTemp; 
-			//	strTokens = scanner.nextLine().split(":");
-				strBuilder.append(scanner.nextLine().split(":"));
-				strBuilder.append(label);
-				Scanner sc = new Scanner(strBuilder.toString());
-				System.out.println(sc.nextLine());
-				
-				System.out.println("length string builder = " + strBuilder.length());
-				//	example.get(qId).add(strTokens);
-			//	example.get(qId).add((Object)label);
+				strTokens = scanner.nextLine().replace(" ", ":").split(":");
+				Map<Integer,Double> map = new HashMap<Integer,Double>();
+				for (int i = 1; i < strTokens.length-1; i++) {
+					int indx = Integer.parseInt(strTokens[i]);
+					double value = Double.parseDouble(strTokens[i+1]);
+					map.put(indx,value );
+					i++;
+				}
+				map.put(-1, new Double(label));
+				List<Map<Integer,Double>> listMaps = new ArrayList<Map<Integer,Double>>();
+				listMaps.add(map);
+				example.put(qId,listMaps);
 			}
 		}
 		scanner.close();
-	//	extractAttributes(example);
+		extractAttributes(example);
 		}
 			
-	private static void extractAttributes(Map<Integer, List<Object>> example) {
+	private static void extractAttributes(Map<Integer,List<Map<Integer,Double>>> example) {
 	
-		for (Entry<Integer, List<Object>> entry : example.entrySet()) {
+		for (Entry<Integer, List<Map<Integer,Double>>> entry : example.entrySet()) {
 		
 			List<Integer> indx = new ArrayList<Integer>();
 			List<Double> valuesList = new ArrayList<Double>();
@@ -81,11 +85,10 @@ public class LoaderMSLR {
 			List<Integer> labels  = new ArrayList<Integer>();
 			boolean timeArrays = true;
 			
-			for (Object obj : entry.getValue()) {
+			for (Map<Integer, Double> entity : entry.getValue()) {
 				if (timeArrays){
-					String [] vals = (String []) obj;
 					
-					for (int i = 0; i < vals.length -1; i++) {
+					for (Entry<Integer, Double> subEntryint > entity.g) {
 						indx.add(Integer.parseInt(vals[i]));
 						valuesList.add(Double.parseDouble(vals[i+1]));	
 					}
@@ -94,9 +97,7 @@ public class LoaderMSLR {
 				}
 				else
 				{
-					
 					labels.add((Integer)obj);
-					
 				}
 			}
 			
@@ -116,10 +117,6 @@ public class LoaderMSLR {
 			for (int i = 0; i < rowPtr.length; i++) {
 				rowPtr[i] = rowPtrValue.get(i);
 			}
-			
 		}
-
 	}
-	
-		
 }
