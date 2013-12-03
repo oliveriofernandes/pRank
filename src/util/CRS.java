@@ -17,11 +17,32 @@ public class CRS {
 	
 	/* Localizations, in the 'values' vector, in which it starts 
 	 * each row. Its size is decided by the size of the matrix */
-	public int rowPtr[];
+	public int[] rowPtr;
 	
 	public int numOfRows;
 	public int numOfCol;
 
+	
+	/* This is the simples constructor. It takes the values, colIndexes and
+	 * rowPtr arrays and assign its values to the correspondents attributes in
+	 * this class
+	 */
+
+	public CRS(double[] values, int[] colIndexes, int[] rowPtr) {
+		this.values = values;
+		this.colIndexes = colIndexes;
+		this.rowPtr = rowPtr;
+
+		this.numOfRows = rowPtr.length - 1;
+
+		int numOfCol = colIndexes[0];
+		for (int i = 0; i < colIndexes.length; i++) {
+			if (numOfCol < colIndexes[i])
+				numOfCol = colIndexes[i];
+		}
+
+	}	
+	
 	/* This constructor takes a effective sparse matrix 
 	 * and convert it to a CRS object */
 	public CRS (double [][] matrix){
