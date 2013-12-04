@@ -166,7 +166,6 @@ public class RankPerceptron {
 						break;
 					}
 				}
-			
 			}
 		}
 		if (numberEquals == sortedScoreItems.size())
@@ -174,8 +173,7 @@ public class RankPerceptron {
 			else return true;
 	}
 
-	/**
-	 * return the feature attributes of a document
+	/** return the feature attributes of a document
 	 * 
 	 * @param example
 	 * @return

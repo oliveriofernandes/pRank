@@ -19,18 +19,18 @@ public class LoaderMSLR {
 
 		List<Example> examples  = LoaderMSLR.getDataset(path);
 		
-		for (Example example : examples) {
-			System.out.println("qId = " + example.rId);
-			System.out.println("indexes:");
-			for (int i = 0; i < example.offerings.colIndexes.length; i++) {
-				System.out.print(" " + example.offerings.colIndexes[i]);
-				
-			}
+//		for (Example example : examples) {
+//			System.out.println("qId = " + example.rId);
+//			System.out.println("indexes:" + '\n');
+//			for (int i = 0; i < example.offerings.colIndexes.length; i++) {
+//				System.out.print(" " + example.offerings.colIndexes[i]);
+//				
+//			}
 			//System.out.println("values:");
 			//for (int i = 0; i < example.offerings.colIndexes.length; i++) {
 			//System.out.print(" " + example.offerings.values[i]);
 			//}
-		}
+//		}
 
 	}
 
@@ -88,8 +88,7 @@ public class LoaderMSLR {
 	private static List<Example> extractAttributes(Map<Integer, List<Map<Integer, Double>>> mapExample) {
 
 		List<Example> examples = new ArrayList<Example>();
-		for (Entry<Integer, List<Map<Integer, Double>>> entry : mapExample
-				.entrySet()) {
+		for (Entry<Integer, List<Map<Integer, Double>>> entry : mapExample.entrySet()) {
 			// array list will receive the indexes for filling the colIndexes
 			// vector for the CRS attribute of each example
 			List<Integer> indx = new ArrayList<Integer>();
@@ -108,7 +107,7 @@ public class LoaderMSLR {
 
 			// Identifies the id of the query document
 			int qId = entry.getKey();
-
+			int lengthColumn = 0;
 			// Performing at each line of data set
 			for (Map<Integer, Double> dsLine : entry.getValue()) {
 				// Flag which indicates
@@ -118,11 +117,18 @@ public class LoaderMSLR {
 				// Fills the fields of indx, values and rowPtw list of each line
 				// on the data set
 				for (Entry<Integer, Double> attributes : dsLine.entrySet()) {
-					indx.add(attributes.getKey());
-					valuesList.add(attributes.getValue());
-					if (timeArrays) {
-						rowPtrValue.add(valuesList.size() - 1);
-						timeArrays = false;
+					//Catch the length size column of the matrix.
+					if ( lengthColumn < attributes.getKey() )
+						lengthColumn = attributes.getKey();
+					
+					if (attributes.getValue()!=0){
+						indx.add(attributes.getKey());
+						valuesList.add(attributes.getValue());
+						//Test if the value corresponds the first non-zero value of this line
+						if (timeArrays) {
+							rowPtrValue.add(valuesList.size() - 1);
+							timeArrays = false;
+						}
 					}
 				}
 			}
@@ -132,17 +138,19 @@ public class LoaderMSLR {
 			// The column indices of the elements in the 'value' vector
 			int[] colIndexes = new int[valuesList.size()];
 			// The rowPtr of the elements in the 'rowPtr' vector
-			int rowPtr[] = new int[rowPtrValue.size()];
+			int rowPtr[] = new int[rowPtrValue.size()+1];
 
 			for (int i = 0; i < valuesList.size(); i++) {
 				values[i] = valuesList.get(i);
 				colIndexes[i] = indx.get(i);
 			}
 
-			for (int i = 0; i < rowPtr.length; i++) {
+			//Fill rowPtr array 
+			for (int i = 0; i < rowPtrValue.size(); i++) 
 				rowPtr[i] = rowPtrValue.get(i);
-			}
-
+			
+			rowPtr[rowPtr.length-1] = values.length;  
+			
 			CRS csr = new CRS(values, colIndexes, rowPtr);
 			Example example = new Example(csr, qId, labels);
 			examples.add(example);
