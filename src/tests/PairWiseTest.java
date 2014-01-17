@@ -9,7 +9,7 @@ import org.junit.Test;
 
 import core.RankPerceptron;
 
-public class RankingPerceptronTest {
+public class PairWiseTest {
 	double doc0[] = {5.0,1.0,3.0,1.0,2.0,3.0};
 	double doc1[] = {7.0,3.0,9.0,9.0,4.0,5.0};
 	double doc2[] = {2.0,9.0,5.0,2.0,6.0,1.0};

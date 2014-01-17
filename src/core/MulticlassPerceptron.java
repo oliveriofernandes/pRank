@@ -9,12 +9,17 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-/** @author Olivério 
- * This class executes the Multiclass Perceptron Algorithm. It receives
+
+
+/** This class executes a Multiclass Perceptron Learning Algorithm implementation. It receives
  * a data training containing multiples labels and returns a set of weight vectors
  * for each label, learned by the trainingMulticlassPerceptron() method. Actually
  * it returns a Map (weightVectorsMap attribute) which keys are labels and values
- * are its synaptic weights vector for a Perceptron. */
+ * are its synaptic weights vector for a Perceptron. 
+ * 
+ * @author Olivério
+ * 
+ **/
 
 public class MulticlassPerceptron  extends PerceptronRule{
 
@@ -55,7 +60,7 @@ public class MulticlassPerceptron  extends PerceptronRule{
 	 * 
 	 * @param inputs
 	 * @param target
-	 * @return The label which, its associated weight vector, maximizes 
+	 * @return The label which its associated weight vector, maximizes 
 	 * the activation function **/
 	public int predictLabel(double[]inputs, int target){
 		
@@ -73,9 +78,8 @@ public class MulticlassPerceptron  extends PerceptronRule{
 			labelList.add(integer);
 		}
 
-		//Shuffle labels presents in the labelList.
 		
-		//Choose an aleatory label, assuming it's the predicted label (at this moment)  
+		//Choose a label, assuming it's the predicted label (at this moment)  
 		predicted = labelList.get(0);
 		
 		//The maximum activation is initially achieved from the weight vector previously chosen, corresponding the

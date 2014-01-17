@@ -1,12 +1,13 @@
 package util;
 
-
-/** @author oliverio
- * 
- * Comprises the Row Storage Storage format for sparse matrix. This data structure 
- * was created only for storing the features attribues of the examples. In order to 
+/** 
+ * This class comprises the Row Storage Storage format for sparse matrix. This data structure 
+ * was created only for storing the features attributes of the examples. In order to 
  * store information in respect request id's, score relevance and so on, there is 
- * Example class. This CRS class is a composition peace of the Example class. **/
+ * Example class. This CRS class is a composition peace of the Example class. 
+ *
+ * @author Olivério
+ */
 
 public class CRS {
 	//The values of nonzero elements of the sparse matrix
@@ -116,6 +117,20 @@ public class CRS {
 		return dotProduct;
 	}
 	
+	public double [] getLine(int line){
+		double [] lineVector = new double[this.numOfCol];
+		int count = 0;
+		// Find where the row starts
+				int rowStart = rowPtr[line];
+
+				// Find where the next row starts
+				int nextRowStarts = rowPtr[line+1];
+
+				for( int i = rowStart; i < nextRowStarts; i++){
+					lineVector[count] = this.getElement(line, colIndexes[i]);
+				}
+		return lineVector;
+	}
 	
 	//get the element in row i and column j in the matrix
 		public double getElement(int i, int j){

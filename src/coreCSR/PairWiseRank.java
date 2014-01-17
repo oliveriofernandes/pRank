@@ -12,19 +12,23 @@ import util.Example;
 import util.comparators.ActivationComparator;
 import util.comparators.PositionComparator;
 
-/** @author Olivério */
-
-/** This class aims execute the ranking perceptron algorithm. It
+/**
+ *  This class aims execute a pairwise ranking  algorithm. It
  * receives a collection of documents and try to classify according by
- * activation. **/
-public class RankPerceptron {
+ * activation. 
+
+ * @author oliverio
+ *
+ */
+
+public class PairWiseRank {
 
 	// Document list contending the examples
 	public List<Example> examples;
 	public double[] weights;
 	public int maxCount;
 
-	public RankPerceptron(List<Example> examples, int maxCount) {
+	public PairWiseRank(List<Example> examples, int maxCount) {
 		this.examples = examples;
 		this.maxCount = maxCount;
 		
@@ -57,7 +61,7 @@ public class RankPerceptron {
             count++;
             
             for(Example example : examples){
-            	
+            		
             	//Build a TreeMap (sorted map), by activations, for each example
             	sortedScoreItems = rankByActivation(example);
             	//Build a TreeMap (sorted map) considering the real order of the example 

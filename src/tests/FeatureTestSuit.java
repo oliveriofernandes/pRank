@@ -7,7 +7,7 @@ import org.junit.runners.Suite;
 @Suite.SuiteClasses({
   BinaryPerceptronTest.class,
   MulticlassPerceptronTest.class,
-  RankingPerceptronTestCRS.class,
+  PairWiseTestCRS.class,
   MTest.class,
   CSRTest.class
 })

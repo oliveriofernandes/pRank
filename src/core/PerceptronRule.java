@@ -1,20 +1,24 @@
 package core;
 
-/** @author Olivério */
-
+/** The original Perceptron includes a fixed threshold value which aid the
+ * perceptron activation function yields this results. This algorithm
+ * actually learn the threshold value too. For this
+ * reason, this method includes a default constant, equals 1,
+ * intending match with the value of w0 (thresholded value), considering
+ * that threshold as any weight value. So its execution give one dumb
+ * column on each example valued by 1.
+ * 
+ * @author Olivério
+ * 
+ */
 public abstract class PerceptronRule {
 
 	double[][] trainingExamples;
 	public int maxCount;
 	
-	/** The original Perceptron includes a fixed threshold value which aid the
-     * perceptron activation function yields this results. This algorithm
-     * actually learn the threshold value too. For this
-     * reason, this method includes a default constant, equals 1,
-     * intending match with the value of w0 (thresholded value), considering
-     * that threshold as any weight value. So its execution give one dumb
-     * column on each example valued by 1.
-     *
+	
+    /**
+     * 
      * @param matrix
      */
     public PerceptronRule(double[][] matrix, int maxCount) {

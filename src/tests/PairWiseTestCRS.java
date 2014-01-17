@@ -9,9 +9,9 @@ import org.junit.Test;
 
 import util.CRS;
 import util.Example;
-import coreCSR.RankPerceptron;
+import coreCSR.PairWiseRank;
 
-public class RankingPerceptronTestCRS {
+public class PairWiseTestCRS {
 		
 	List<Example> examples;
 	
@@ -38,7 +38,7 @@ public class RankingPerceptronTestCRS {
 	@Test
 	public void execute(){
 		
-		RankPerceptron rp = new RankPerceptron(examples, 100);
+		PairWiseRank rp = new PairWiseRank(examples, 100);
 		Assert.assertEquals(rp.weights.length, 6);
 		double[] weights = {1.0, 2.0, 3.0, 4.0, 5.0};
 		rp.weights = weights;

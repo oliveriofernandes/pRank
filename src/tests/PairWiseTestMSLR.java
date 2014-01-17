@@ -13,7 +13,7 @@ import util.LoaderMSLR;
 
 import core.RankPerceptron;
 
-public class RankingPerceptronTestMSLR {
+public class PairWiseTestMSLR {
 
 	public void settings(){
 	}
