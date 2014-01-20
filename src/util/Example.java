@@ -23,24 +23,24 @@ public class Example {
 
 	public CRS offerings;
 	public int rId;
-	public Map<Integer,Double> labels;
+	public Map<Integer,Integer> labels;
 	
 	public Example(CRS documents,int rId) {
 		this.offerings = documents;
 		this.rId = rId;
-		this.labels = new HashMap<Integer,Double>(100);
+		this.labels = new HashMap<Integer,Integer>(100);
 	}
 	
-	public Example(CRS documents,int rId, Map<Integer,Double> labels) {
+	public Example(CRS documents, int rId, Map<Integer,Integer> labels) {
 		this.offerings = documents;
 		this.rId = rId;
 		this.labels = labels;
 	}
 	
-	public TreeSet<Double> getLabelValues(){
+	public TreeSet<Integer> getLabelValues(){
 		
-		TreeSet<Double> labels = new TreeSet<Double>();
-		for (Entry<Integer, Double> entry : this.labels.entrySet()) {
+		TreeSet<Integer> labels = new TreeSet<Integer>();
+		for (Entry<Integer, Integer> entry : this.labels.entrySet()) {
 			labels.add(entry.getValue());
 		}
 		return labels;
