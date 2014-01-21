@@ -17,28 +17,15 @@ public class LoaderMSLR {
 				File.separator + "datasets" + File.separator + "MSLR-WEB10K" + File.separator + "Fold1" + File.separator
 						+ "sampleTrain.txt");
 
-		List<Example> examples  = LoaderMSLR.getDataset(path);
-		
-//		for (Example example : examples) {
-//			System.out.println("qId = " + example.rId);
-//			System.out.println("indexes:" + '\n');
-//			for (int i = 0; i < example.offerings.colIndexes.length; i++) {
-//				System.out.print(" " + example.offerings.colIndexes[i]);
-//				
-//			}
-			//System.out.println("values:");
-			//for (int i = 0; i < example.offerings.colIndexes.length; i++) {
-			//System.out.print(" " + example.offerings.values[i]);
-			//}
-//		}
-
 	}
 
 	public static List<Example> getDataset(String path) throws FileNotFoundException {
 		int label;
 		int qId = 0;
 		int qIdTemp;
-		Map<Integer, List<Map<Integer, Double>>> mapExample = new HashMap<Integer, List<Map<Integer, Double>>>();
+		int indx;
+		int value;
+		Map<Integer, List<Map<Integer, Integer>>> mapExample = new HashMap<Integer, List<Map<Integer, Integer>>>();
 		Scanner scanner = new Scanner(new File(path));
 
 		String[] strTokens;
@@ -54,29 +41,29 @@ public class LoaderMSLR {
 			// Catches the relationship (qId and Xi) presented in the document.
 			if (qIdTemp == qId) {
 				strTokens = scanner.nextLine().replace(" ", ":").split(":");
-				Map<Integer, Double> map = new HashMap<Integer, Double>();
+				Map<Integer, Integer> map = new HashMap<Integer, Integer>();
 				for (int i = 1; i < strTokens.length - 1; i++) {
-					int indx = Integer.parseInt(strTokens[i]);
-					double value = Double.parseDouble(strTokens[i + 1]);
+					indx = Integer.parseInt(strTokens[i]);
+					value = Integer.parseInt(strTokens[i + 1]);
 					map.put(indx, value);
 					i++;
 				}
-				map.put(-1, new Double(label));
+				map.put(-1, new Integer(label));
 				mapExample.get(qId).add(map);
 			}
 
 			else {
 				qId = qIdTemp;
 				strTokens = scanner.nextLine().replace(" ", ":").split(":");
-				Map<Integer, Double> map = new HashMap<Integer, Double>();
+				Map<Integer, Integer> map = new HashMap<Integer, Integer>();
 				for (int i = 1; i < strTokens.length; i++) {
-					int indx = Integer.parseInt(strTokens[i]);
-					double value = Double.parseDouble(strTokens[i + 1]);
+					indx = Integer.parseInt(strTokens[i]);
+					value = Integer.parseInt(strTokens[i + 1]);
 					map.put(indx, value);
 					i++;
 				}
-				map.put(-1, new Double(label));
-				List<Map<Integer, Double>> listMaps = new ArrayList<Map<Integer, Double>>();
+				map.put(-1, new Integer(label));
+				List<Map<Integer, Integer>> listMaps = new ArrayList<Map<Integer, Integer>>();
 				listMaps.add(map);
 				mapExample.put(qId, listMaps);
 			}
@@ -85,22 +72,22 @@ public class LoaderMSLR {
 		return extractAttributes(mapExample);
 	}
 
-	private static List<Example> extractAttributes(Map<Integer, List<Map<Integer, Double>>> mapExample) {
+	private static List<Example> extractAttributes(Map<Integer, List<Map<Integer, Integer>>> mapExample) {
 
 		List<Example> examples = new ArrayList<Example>();
-		for (Entry<Integer, List<Map<Integer, Double>>> entry : mapExample.entrySet()) {
+		for (Entry<Integer, List<Map<Integer, Integer>>> entry : mapExample.entrySet()) {
 			// array list will receive the indexes for filling the colIndexes
 			// vector for the CRS attribute of each example
 			List<Integer> indx = new ArrayList<Integer>();
 			// array list will receive the values for filling the values vector
 			// for the CRS attribute of each example
-			List<Double> valuesList = new ArrayList<Double>();
+			List<Integer> valuesList = new ArrayList<Integer>();
 			// array list will receive the rowPtrValue for filling the
 			// rowPtrValue vector for the CRS attribute of each example
 			List<Integer> rowPtrValue = new ArrayList<Integer>();
 			// Map contained the labels of each example - the Key is the line
 			// number and value is the corresponding label
-			Map<Integer, Double> labels = new HashMap<Integer, Double>();
+			Map<Integer, Integer> labels = new HashMap<Integer, Integer>();
 			// Stores labels of each row
 			boolean timeArrays;
 			int countLine = 0;
@@ -109,14 +96,14 @@ public class LoaderMSLR {
 			int qId = entry.getKey();
 			int lengthColumn = 0;
 			// Performing at each line of data set
-			for (Map<Integer, Double> dsLine : entry.getValue()) {
+			for (Map<Integer, Integer> dsLine : entry.getValue()) {
 				// Flag which indicates
 				timeArrays = true;
 				labels.put(countLine++, dsLine.remove(-1));
 
 				// Fills the fields of indx, values and rowPtw list of each line
 				// on the data set
-				for (Entry<Integer, Double> attributes : dsLine.entrySet()) {
+				for (Entry<Integer, Integer> attributes : dsLine.entrySet()) {
 					//Catch the length size column of the matrix.
 					if ( lengthColumn < attributes.getKey() )
 						lengthColumn = attributes.getKey();
