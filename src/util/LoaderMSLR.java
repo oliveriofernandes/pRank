@@ -32,22 +32,30 @@ public class LoaderMSLR {
 	 * @throws FileNotFoundException
 	 */
 	public static List<Example> getDataset(String path)	throws FileNotFoundException {
+		//the Yi value
 		int label;
+		
+		//query Id variable
 		int qId = 0;
-		int indx;
+		//index of the feature vector
+		int index;
+		//value of each index on the feature vector
 		double value;
-		Map<Integer, List<Map<Integer, Double>>> mapExample = new HashMap<Integer, List<Map<Integer, Double>>>();
+		
+		//Contains the id query as the key and a list with lots of maps which represents the documents 
+		//associated (key as index of the feature vector)   
+		Map<Integer, List<Map<Integer, Double>>> mapExamples = new HashMap<Integer, List<Map<Integer, Double>>>();
 		Scanner scanner = new Scanner(new File(path));
 
 		String[] strTokens;
 
-		List<Map<Integer, Double>> listMaps = new ArrayList<Map<Integer, Double>>();
-		Map<Integer, Double> map = new HashMap<Integer, Double>();
+		///each map is a document - feature vector
+		//Map<Integer, Double> map = new HashMap<Integer, Double>();
 
 		while (scanner.hasNextLine()) {
 
-			map.clear();
-
+			//map.clear();
+			Map<Integer, Double> map = new HashMap<Integer, Double>();
 			// Get the label value in the example
 			label = scanner.nextInt();
 
@@ -59,63 +67,77 @@ public class LoaderMSLR {
 			strTokens = scanner.nextLine().replace(" ", ":").split(":");
 
 			for (int i = 1; i < strTokens.length - 1; i++) {
-				indx = Integer.parseInt(strTokens[i]);
+				index = Integer.parseInt(strTokens[i]);
 				value = Double.parseDouble(strTokens[i + 1]);
-				map.put(indx, value);
+				map.put(index, value);
 				i++;
 			}
 			map.put(-1, new Double(label));
-			listMaps.add(map);
-			if ((mapExample.get(qId)) != null) {
-				mapExample.get(qId).add(map);
+			//if exists a query identifier in the map example, add a map (feature vector - document) in the 
+			//list of documents(associated ) 
+			if ((mapExamples.get(qId)) != null) {
+				mapExamples.get(qId).add(map);
 			} else {
-				mapExample.put(qId, listMaps);
-				mapExample.get(qId).add(map);
+				mapExamples.put(qId, new ArrayList<Map<Integer, Double>>());
+				mapExamples.get(qId).add(map);
 			}
 
 		}
 		scanner.close();
-		return extractAttributes(mapExample);
+		return extractAttributes(mapExamples);
 	}
 
-	private static List<Example> extractAttributes(
-			Map<Integer, List<Map<Integer, Double>>> mapExample) {
+	/**
+	 * Get a map with all examples in a data set which contains, for each request id, there is a list with lots of maps
+	 * with the corresponding documents.
+	 * 
+	 * @param mapExample
+	 * @return
+	 */
+	private static List<Example> extractAttributes(Map<Integer, List<Map<Integer, Double>>> mapExample) {
 
+		int labelValue;
 		List<Example> examples = new ArrayList<Example>();
-		for (Entry<Integer, List<Map<Integer, Double>>> entry : mapExample
-				.entrySet()) {
-			// array list will receive the indexes for filling the colIndexes
+		for (Entry<Integer, List<Map<Integer, Double>>> entry : mapExample.entrySet()) {
+			
+			// This array list will receive the indexes for filling the colIndexes
 			// vector for the CRS attribute of each example
 			List<Integer> indx = new ArrayList<Integer>();
-			// array list will receive the values for filling the values vector
+			
+			// This array list will receive the values for filling the values vector
 			// for the CRS attribute of each example
 			List<Double> valuesList = new ArrayList<Double>();
-			// array list will receive the rowPtrValue for filling the
+			
+			// This array list will receive the rowPtrValue for filling the
 			// rowPtrValue vector for the CRS attribute of each example
 			List<Integer> rowPtrValue = new ArrayList<Integer>();
-			// Map contained the labels of each example - the Key is the line
+			
+			// This Map associates each example with its label- the Key is the line
 			// number and value is the corresponding label
-			Map<Integer, Double> labels = new HashMap<Integer, Double>();
+			Map<Integer, Integer> labels = new HashMap<Integer, Integer>();
+			
 			// Stores labels of each row
 			boolean timeArrays;
 			int countLine = 0;
 
-			// Identifies the id of the query document
+			// Identifies the query identifier on each document
 			int qId = entry.getKey();
-			int lengthColumn = 0;
-			// Performing at each line of data set
+			
+			// Performing on each line of data set
 			for (Map<Integer, Double> dsLine : entry.getValue()) {
-				// Flag which indicates
+				// Flag which indicates if a value corresponds the first non-zero
+				// of this line
 				timeArrays = true;
-				labels.put(countLine++, dsLine.remove(-1));
+			
+				labelValue = dsLine.remove(-1).intValue();
+				
+				labels.put(countLine++,labelValue );
 
-				// Fills the fields of indx, values and rowPtw list of each line
+				// Fills the fields of indx list, values list and rowPtw list on each line
 				// on the data set
 				for (Entry<Integer, Double> attributes : dsLine.entrySet()) {
 					// Catch the length size column of the matrix.
-					if (lengthColumn < attributes.getKey())
-						lengthColumn = attributes.getKey();
-
+						
 					if (attributes.getValue() != 0) {
 						indx.add(attributes.getKey());
 						valuesList.add(attributes.getValue());
