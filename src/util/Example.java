@@ -33,13 +33,6 @@ public class Example {
 	
 	public Map<Integer,Integer> labels;
 	
-//	public Example (int rid){
-//		this.rId = rid;
-//		this.offerings = new CRS(matrix);
-//		this.labels = new HashMap<Integer,Integer>(100);
-//		
-//	}
-	
 	public Example(CRS documents,int rId) {
 		this.offerings = documents;
 		this.rId = rId;
@@ -62,16 +55,4 @@ public class Example {
 	}
 	
 
-//	/** @param line
-//	 * @return the last column in an specific line - It can be the score, rank, etc.: depends on the dataset. */
-//	public double getRank(int line) {
-//		
-//		//Index where starts next line
-//		int rowPtr = documents.rowPtr[line+1];
-//		
-//		//Index where the line above ends (column target)
-//		int j = documents.colIndexes[rowPtr]-1;
-//		
-//		return documents.getElement(line,j);
-//	}
 }

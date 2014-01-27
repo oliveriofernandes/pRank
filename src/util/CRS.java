@@ -36,10 +36,10 @@ public class CRS {
 
 		this.numOfRows = rowPtr.length - 1;
 
-		int numOfCol = colIndexes[0];
+		this.numOfCol = colIndexes[0];
 		for (int i = 0; i < colIndexes.length; i++) {
-			if (numOfCol < colIndexes[i])
-				numOfCol = colIndexes[i];
+			if (this.numOfCol < colIndexes[i])
+				this.numOfCol = colIndexes[i];
 		}
 
 	}	

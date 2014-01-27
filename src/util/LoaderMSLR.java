@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Scanner;
+import java.util.TreeMap;
 
 public class LoaderMSLR {
 
@@ -21,11 +22,10 @@ public class LoaderMSLR {
 
 	}
 
-	/**
-	 * Receive a path file, parses the dataset and returns a list containing the
-	 * integer data set, preserving its relationship between queries ids, its
-	 * correspondents feature vectors and the labels associated each query and
-	 * feature vector, meaning this relevance.
+	/** Receive a path file, parses the dataset and returns a list containing the
+	 *  integer data set, preserving its relationship between queries ids, its
+	 *  correspondents feature vectors and the labels associated each query and
+	 *  feature vector, meaning this relevance.
 	 * 
 	 * @param path
 	 * @return
@@ -37,29 +37,29 @@ public class LoaderMSLR {
 		
 		//query Id variable
 		int qId = 0;
+		
 		//index of the feature vector
 		int index;
 		//value of each index on the feature vector
 		double value;
 		
-		//Contains the id query as the key and a list with lots of maps which represents the documents 
-		//associated (key as index of the feature vector)   
-		Map<Integer, List<Map<Integer, Double>>> mapExamples = new HashMap<Integer, List<Map<Integer, Double>>>();
+		/*The mapExample structure consists of the query id as key and a list with lots of TreeMaps which
+		/represents the associated documents (key as index of the feature vector and its corresponding value)
+		with the query */   
+		Map<Integer, List<TreeMap<Integer, Double>>> mapExamples = new HashMap<Integer, List<TreeMap<Integer, Double>>>();
 		Scanner scanner = new Scanner(new File(path));
 
 		String[] strTokens;
 
-		///each map is a document - feature vector
-		//Map<Integer, Double> map = new HashMap<Integer, Double>();
-
 		while (scanner.hasNextLine()) {
 
-			//map.clear();
-			Map<Integer, Double> map = new HashMap<Integer, Double>();
+			///each TreeMap is a document (feature vector)
+			TreeMap<Integer, Double> map = new TreeMap<Integer, Double>();
+			
 			// Get the label value in the example
 			label = scanner.nextInt();
 
-			// Get the qId in the line
+			// Get the qId (query identifier) in the line
 			qId = Integer.parseInt(scanner.next().split(":")[1]);
 
 			// Catches the relationship between a query id and feature vector
@@ -72,13 +72,15 @@ public class LoaderMSLR {
 				map.put(index, value);
 				i++;
 			}
+			// ON EACH LINE, ADD A DUMMI VALUE EQUALS 1
+			//map.put(0, 1.0);
 			map.put(-1, new Double(label));
-			//if exists a query identifier in the map example, add a map (feature vector - document) in the 
-			//list of documents(associated ) 
+			//if exists a query identifier in the map example, add a TreeMap (feature vector - document) in the 
+			//list of the associated documents 
 			if ((mapExamples.get(qId)) != null) {
 				mapExamples.get(qId).add(map);
 			} else {
-				mapExamples.put(qId, new ArrayList<Map<Integer, Double>>());
+				mapExamples.put(qId, new ArrayList<TreeMap<Integer, Double>>());
 				mapExamples.get(qId).add(map);
 			}
 
@@ -94,15 +96,15 @@ public class LoaderMSLR {
 	 * @param mapExample
 	 * @return
 	 */
-	private static List<Example> extractAttributes(Map<Integer, List<Map<Integer, Double>>> mapExample) {
+	private static List<Example> extractAttributes(Map<Integer, List<TreeMap<Integer, Double>>> mapExample) {
 
 		int labelValue;
 		List<Example> examples = new ArrayList<Example>();
-		for (Entry<Integer, List<Map<Integer, Double>>> entry : mapExample.entrySet()) {
+		for (Entry<Integer, List<TreeMap<Integer, Double>>> entry : mapExample.entrySet()) {
 			
 			// This array list will receive the indexes for filling the colIndexes
 			// vector for the CRS attribute of each example
-			List<Integer> indx = new ArrayList<Integer>();
+			List<Integer> index = new ArrayList<Integer>();
 			
 			// This array list will receive the values for filling the values vector
 			// for the CRS attribute of each example
@@ -123,7 +125,7 @@ public class LoaderMSLR {
 			// Identifies the query identifier on each document
 			int qId = entry.getKey();
 			
-			// Performing on each line of data set
+			// Iterate on each line of data set
 			for (Map<Integer, Double> dsLine : entry.getValue()) {
 				// Flag which indicates if a value corresponds the first non-zero
 				// of this line
@@ -133,13 +135,13 @@ public class LoaderMSLR {
 				
 				labels.put(countLine++,labelValue );
 
-				// Fills the fields of indx list, values list and rowPtw list on each line
+				// Fills the fields of index list, values list and rowPtw list on each line
 				// on the data set
 				for (Entry<Integer, Double> attributes : dsLine.entrySet()) {
+					
 					// Catch the length size column of the matrix.
-						
 					if (attributes.getValue() != 0) {
-						indx.add(attributes.getKey());
+						index.add(attributes.getKey());
 						valuesList.add(attributes.getValue());
 						// Test if the value corresponds the first non-zero
 						// value of this line
@@ -161,7 +163,7 @@ public class LoaderMSLR {
 
 			for (int i = 0; i < valuesList.size(); i++) {
 				values[i] = valuesList.get(i);
-				colIndexes[i] = indx.get(i);
+				colIndexes[i] = index.get(i);
 			}
 
 			// Fill rowPtr array
