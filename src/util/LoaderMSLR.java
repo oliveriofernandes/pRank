@@ -72,6 +72,7 @@ public class LoaderMSLR {
 				map.put(index, value);
 				i++;
 			}
+			
 			// ON EACH LINE, ADD A DUMMI VALUE EQUALS 1
 			//map.put(0, 1.0);
 			map.put(-1, new Double(label));
