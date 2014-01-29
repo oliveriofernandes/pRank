@@ -74,7 +74,7 @@ public class LoaderMSLR {
 			}
 			
 			// ON EACH LINE, ADD A DUMMI VALUE EQUALS 1
-			//map.put(0, 1.0);
+			map.put(0, 1.0);
 			map.put(-1, new Double(label));
 			//if exists a query identifier in the map example, add a TreeMap (feature vector - document) in the 
 			//list of the associated documents 
@@ -119,7 +119,8 @@ public class LoaderMSLR {
 			// number and value is the corresponding label
 			Map<Integer, Integer> labels = new HashMap<Integer, Integer>();
 			
-			// Stores labels of each row
+			// Flag which indicates if a value corresponds
+			//the first non-zero of this line
 			boolean timeArrays;
 			int countLine = 0;
 
