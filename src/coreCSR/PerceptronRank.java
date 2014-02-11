@@ -1,27 +1,19 @@
 package coreCSR;
 
-import java.util.HashSet;
-import java.util.Set;
 import java.util.TreeSet;
 
-import javax.print.attribute.HashAttributeSet;
-
-import core.Perceptron;
+import util.Example;
 import core.PerceptronRule;
 
-import tests.CSRTest;
-import util.CRS;
-import util.Example;
-
-/**
- * This class is an implementation of the Perceptron Ranking Learning Algorithm,
+/** This class is an implementation of the Perceptron Ranking Learning Algorithm,
  * an online algorithm for ordinal classification. A pointwise method of
  * learning to rank, which is based on Perceptron Learning Algorithm.
  * 
  * For this class, the structure of the ranking problem is ignored. Each example
- * corresponds only a number of feature vector (offerings attribute).
+ * corresponds a feature vector (offerings attribute) and the corresponding
+ * label (value)
  * 
- * @author OlivÃ©rio
+ * @author Olivério
  * 
  */
 public class PerceptronRank {
@@ -29,15 +21,21 @@ public class PerceptronRank {
 	// The example attribute corresponds a set of feature vectors (CRS object)
 	// and its corresponding labels
 	public Example example;
-	public double weights[];
-	// Maximun number of iterations in the main training loop
-	public int maxCount;
-	public int labels[];
-	// Intervals which define the labels on the W arrow...
+	
+	//The weights vector.
+	public double [] weights;
+	
+	//Label vector
+	public int [] labels;
+	
+	// Intervals which define the labels
+	//each example will be labeled according to their threshold
 	public double thresholds[];
 
-	/**
-	 * The main constructor catch a example and maxCount
+	// Maximun number of iterations in the main training loop
+	public int maxCount;
+	
+	/** The main constructor receives an example and maxCount
 	 * 
 	 * @param example
 	 * @param maxCount
@@ -45,34 +43,36 @@ public class PerceptronRank {
 	public PerceptronRank(Example example, int maxCount) {
 		this.example = example;
 		this.weights = new double[example.offerings.numOfCol];
-		this.maxCount = maxCount;
-
-		TreeSet<Integer> treeSet = this.example.getLabelValues();
+		
 		// Initialize labels vector
-		this.labels = new int[treeSet.size()];
+		fillLabeslVector();
+		
 		// Initialize thresholds vector
-		this.thresholds = new double[treeSet.size()];
-
-		fillLabeslVector(treeSet);
-
+		this.thresholds = new double[this.labels.length];
+		
+		this.maxCount = maxCount;
 	}
 
-	protected void fillLabeslVector(TreeSet<Integer> treeSet) {
+	protected void fillLabeslVector() {
 		int count = 0;
 
+		//Ordered set of the thresholds 
+		TreeSet<Integer> treeSet = this.example.getLabelValues();
+		
+		this.labels = new int [treeSet.size()];
+		
 		for (int label : treeSet) {
 			this.labels[count] = label;
 			count++;
 		}
-
 	}
 
-	/**
-	 * Computes the minimum value r = min{r / wi*xi - br < 0} (r in 1 .. k)
+	/** Computes the minimum value r = min{r / wi*xi - br < 0} (r in 1 .. k)
 	 * 
 	 * @param line
 	 * @return
 	 */
+	//TESTED
 	private int minValue(int line) {
 
 		// Result of the aggregation function of the
@@ -85,8 +85,7 @@ public class PerceptronRank {
 		// Temporary index of the minimum doc product
 		int indexMinValue = 0;
 
-		dotProduct = PerceptronRule.dotProduct(this.weights,
-				this.example.offerings.getLine(line));
+		dotProduct = this.example.offerings.dotProduct(this.weights, line);
 
 		// Catch the min value among the values less or equal then the doc
 		// product
@@ -119,16 +118,20 @@ public class PerceptronRank {
 
 	public double[] training() {
 
-		// The weights, thresholds and labels vector are already initialized
+		// The weights, thresholds and labels vectors are already initialized on the constructor.
 		int count = 0;
+		
+		//Initially, this postulate is assumed to be true 
 		boolean hasError = true;
+		
+		//The number of examples is the total number of Xi,Yi pars in the present algorithm
 		int qtdExamples = this.example.offerings.numOfRows;
 
-		// Predicted value based on the
+		// Predicted value 
 		double predicted;
 
-		// first one is infinitely positive
-		this.thresholds[this.thresholds.length - 1] = 1000;
+		// According to the algorithm, the last value is "infinitely" positive
+		this.thresholds[this.thresholds.length - 1] = Integer.MAX_VALUE;
 
 		double dotProduct;
 
@@ -138,10 +141,9 @@ public class PerceptronRank {
 		int auxLabels[] = new int[this.thresholds.length];
 
 		int tau[] = new int[this.thresholds.length];
-		/*
-		 * while there is misclassification and the quantity of attempts is less
-		 * than the maximum permitted (maxCount attribute)
-		 */
+		
+		/* While there is misclassification and the quantity of attempts is less
+		 * than the maximum value initially set (maxCount attribute) */
 		while ((hasError == true) && (count < this.maxCount)) {
 			hasError = false;
 			count++;
@@ -163,8 +165,7 @@ public class PerceptronRank {
 					}
 
 					for (int j = 0; j < this.labels.length - 1; j++) {
-						dotProduct = PerceptronRule.dotProduct(weights,
-								this.example.offerings.getLine(i));
+						dotProduct = example.offerings.dotProduct(weights, i);
 						if ((dotProduct - this.labels[j]) * auxLabels[j] <= 0)
 							tau[j] = auxLabels[j];
 						else

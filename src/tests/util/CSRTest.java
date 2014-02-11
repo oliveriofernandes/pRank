@@ -1,6 +1,7 @@
-package tests;
+package tests.util;
 
 import static org.junit.Assert.assertEquals;
+import junit.framework.AssertionFailedError;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -103,7 +104,7 @@ public class CSRTest {
 	}
 	
 	@Test
-	public void testDotProduct(){
+	public void testDotProductByAnotherCRSVector(){
 		double[][] w1 = { {  1,      2,     0,     0,     0,     1  } };
 		double[][] w2 = { {  0,      0,     0,     0,     0,     0  } };
 		double[][] w3 = { { -5,    -10,     8,     7,   6.5,     1  } };
@@ -129,6 +130,22 @@ public class CSRTest {
 		assertEquals(   -2,    docs.dotProduct(new CRS (w10),0), 0);
 		assertEquals(   136,   docs.dotProduct(new CRS (w11),4), 0);
 		assertEquals(   1.56,   docs.dotProduct(new CRS (w12),5), 0);
+		
+	}
+	
+	@Test
+	public void testDotProductByAnotherSingleWeightVector(){
+		
+		try {
+			docs.dotProduct(new double [] {1,2,3,4,5,6,7,9}, 2);
+		} catch (ArrayIndexOutOfBoundsException e) {
+			Assert.assertTrue(e.getMessage().equals("Incompatible lengths! " +
+					"The weight.length = 8 and numOfCol = 6"));
+		}
+		
+		assertEquals(0, docs.dotProduct(new double [] {0, 9, 4, 0, 0, 1}, 0),0);
+		assertEquals(31.8, docs.dotProduct(new double [] {1, 3.2, 4, 0, 0, 0}, 1),0);
+		assertEquals(58.7, docs.dotProduct(new double [] {0, 1.1, 2, 5, 0, 0}, 2),0);
 		
 	}
 	

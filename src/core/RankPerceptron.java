@@ -10,11 +10,13 @@ import java.util.TreeMap;
 import util.comparators.ActivationComparator;
 import util.comparators.PositionComparator;
 
-/** @author OlivÃ©rio */
-
 /** This class aims execute the ranking perceptron algorithm. It
  * receives a collection of documents and try to classify according by
- * activation. **/
+ * activation. 
+ * 
+ * @author Olivério
+ * 
+ * **/
 public class RankPerceptron extends PerceptronRule {
 
 	// Document list contending the examples

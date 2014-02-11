@@ -1,10 +1,8 @@
 package util;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
 import java.util.TreeSet;
 
 /** 
@@ -16,7 +14,7 @@ import java.util.TreeSet;
  * corresponds of an association of each offering identifier and its respective label (score) 
  * given in the data set.  
  * 
- * @author OlivÃ©rio
+ * @author Olivério
  *
  **/
 
@@ -27,7 +25,8 @@ public class Example {
 	public CRS offerings;
 	//The request identifier of the example
 	public int rId;
-	/*This map forms the relationship between each 'offering' (can be a document, item and so on)
+	
+	/*The relationship between each 'offering' (can be a document, item and so on)
 	 * and the corresponding label. This is because, in a general case, an example can contain lots
 	 * of document (a query can retrieves a set of documents, each one with a label representing its relevance) */ 
 	
@@ -54,5 +53,16 @@ public class Example {
 		return labels;
 	}
 	
+	public TreeSet<Integer> getLabelValues(int rId){
+		if (rId == this.rId)
+			return getLabelValues();
+		return null;
+	}
+	
+	public CRS getOfferings(int rId){
+		if (rId == this.rId)
+			return this.offerings;
+		return null;
+	}
 
 }

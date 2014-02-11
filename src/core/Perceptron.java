@@ -7,7 +7,7 @@ public class Perceptron {
 	 * @param inputs
 	 * @return 1 if this perceptron was activate or -1 otherwise
 	 * 
-	 *  @author OlivÃ©rio 
+	 *  @author Olivério 
 	 *  
 	 */
 	public static double activation (double[] weights, double[] inputs){

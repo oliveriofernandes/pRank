@@ -1,11 +1,9 @@
-package tests;
+package tests.util;
 
 import static org.junit.Assert.assertEquals;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.util.List;
-import java.util.Map.Entry;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -15,6 +13,9 @@ import util.LoaderMSLR;
 
 public class LoaderMSLRTest {
 
+	//This vectors consist on vector values extracted from the sampleTrain.txt data set.
+	//There is a modification: Each "new line" begins with the value 1 (one) meaning the 
+	// "artificial entry" for the W0 weight on the weight vector!
 	double[] valuesVectorQId_16 = { 1.0, 7.0, 3.0, 7.0, 1.0, 0.428571, 1.0, 638.0, 7.0, 11.0, 
 			656.0, 18.542189, 50.99229, 45.079776, 48.199288, 18.527701, 64.0, 3.0, 67.0, 1.0, 
 			1.0, 20.0, 1.0, 21.0, 9.142857, 0.428571, 9.571429, 59.265306, 0.244898, 59.959184, 
@@ -34,7 +35,16 @@ public class LoaderMSLRTest {
 			1.430623, 2.315529, 10.00760, 40.521935, 5.139807, 32.170043, 67.247544, 1, 1, 0.857476, 0.411387, 
 			0.43859, 0.851678, 39.24778, 13.621693, 10.711787, 40.607153, -39.271452, -58.536245, -51.333272,
 			-58.903865, -38.519583, -46.179467, -56.968459, -57.478089, -59.726693, -45.508249, -36.775187,
-			-64.94727, -58.882774, -68.527975, -36.166918, 4, 71, 37443, 51991, 1, 1 };
+			-64.94727, -58.882774, -68.527975, -36.166918, 4, 71, 37443, 51991, 1, 1, 1, 5, 1, 2, 6, 0.714286, 
+			0.142857, 0.285714, 0.857143, 1702, 5, 9, 1716, 18.542189, 50.99229, 45.079776, 48.199288, 18.527701, 
+			51, 1, 2, 54, 42, 1, 1, 44, 7.285714, 0.142857, 0.285714, 7.714286, 203.346939, 0.122449, 0.204082, 
+			221.632653, 0.029965, 0.20000, 0.222222, 0.031469, 0.024677, 0.20000, 0.111111, 0.025641, 0.004281, 
+			0.028571, 0.031746, 0.004496, 0.00007, 0.004898, 0.00252, 0.000075, 141.004502, 6.467245, 15.370228, 
+			151.046366, 126.97482, 6.467245, 8.135147, 132.981649, 20.14350, 0.923892, 2.195747, 21.578052, 1907.212337, 
+			5.12146, 12.111126, 2072.759715, 0.421122, 0.374694, 0.589198, 0.435438, 16.239993, 7.966264, 14.955498,
+			18.911348, -56.422364, -58.536245, -55.066035, -51.973749, -53.379023, -54.50521, -56.968459, -57.304641, 
+			-58.392014, -51.928294, -56.095791, -64.94727, -65.645859, -59.508556, -51.250372, 3, 49, 7, 6683, 39632, 1, 
+			8, 1, 209.8};
 
 	@Test
 	public void getDataSetTest() throws Exception {
@@ -56,26 +66,27 @@ public class LoaderMSLRTest {
 
 	private void testRelatedElemnts(Example example) throws Exception {
 
-		switch (example.rId) {
+		switch ( example.rId ) {
 		case 1:
 
+			assertEquals(20,example.offerings.numOfRows);
 			break;
 
 		case 16:
 
 			assertEquals(41,example.offerings.numOfRows);
 			
-			compareValues(example, valuesVectorQId_16, 2);
+			compareValues(example, valuesVectorQId_16, 3);
 
-			// Assert.assertArrayEquals(valuesVectorQId_16,
-			// example.offerings.values, 0.0);
 			break;
 
 		case 31:
 
+			assertEquals(6,example.offerings.numOfRows);
 			break;
 
 		default:
+			System.out.println("Some error with the parser and data training used here!");
 			break;
 		}
 
@@ -83,34 +94,34 @@ public class LoaderMSLRTest {
 
 	private void compareValues(Example example, double[] testVector, int qtdLines) {
 		
-		//the index column CRS matrix 
-		int col = 0;
+		//the index column counter CRS matrix 
+		int countCol = 0;
 		int limit = testVector.length;
 		int colIndex = 0;
 		try {
 			//Scan each line in the matrix
 			for (int lin = 0; lin < qtdLines; lin++) {
 				//The test vector corresponds the value vector in the test routine
-				col = 0;
-				for (; ((colIndex < limit) && (col < example.offerings.numOfCol)); colIndex++) {
+				countCol = 0;
+				for (; ( (colIndex < limit) && (countCol < example.offerings.numOfCol) ); colIndex++) {
 					
-					//If the value of test vector corresponds the real value 
-					//of this corresponding CRS matrix on the data set
-					if ((testVector[colIndex]) == (example.offerings.getElement(lin, col))) {
-						col++;
+					/* If the value of test vector corresponds the real value 
+					   of this corresponding CRS matrix on the data set */
+					if ((testVector[colIndex]) == (example.offerings.getElement(lin, countCol))) {
+						countCol++;
 
-					} else if (example.offerings.getElement(lin, col) != 0) {
-						System.out.println("error: example.offerings.getElement(" + lin + ", " + col + 
+					} else if (example.offerings.getElement(lin, countCol) != 0) {
+						System.out.println("error: example.offerings.getElement(" + lin + ", " + countCol + 
 								") is different to zero");
 						System.out.println("error: testVector[" + colIndex + "] is different to " +
-								"(example.offerings.getElement(" + lin +"," + col + ")");
+								"(example.offerings.getElement(" + lin +"," + countCol + ")");
 						System.out.println("The value of testVector[" + colIndex + "] is " 
 								+ testVector[colIndex]);
 						System.out.println("The value of example.offerings.getElement(" + lin +"" +
-								", " + col + ") is " + example.offerings.getElement(lin,col));
+								", " + countCol + ") is " + example.offerings.getElement(lin,countCol));
 					} else {
-						while (example.offerings.getElement(lin, col) == 0) 
-							col++;
+						while ( (countCol < example.offerings.numOfCol) && (example.offerings.getElement(lin, countCol) == 0)) 
+							countCol++;
 						colIndex--;
 						continue;
 					}

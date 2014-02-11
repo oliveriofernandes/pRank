@@ -3,6 +3,8 @@ package tests;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
+import tests.util.CSRTest;
+
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
   BinaryPerceptronTest.class,

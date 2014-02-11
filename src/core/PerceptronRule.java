@@ -8,7 +8,7 @@ package core;
  * that threshold as any weight value. So its execution give one dumb
  * column on each example valued by 1.
  * 
- * @author OlivÃ©rio
+ * @author Olivério
  * 
  */
 public abstract class PerceptronRule {

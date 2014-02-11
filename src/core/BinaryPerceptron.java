@@ -4,7 +4,7 @@ package core;
  * The perceptron algorithm obtains a synaptic weight vector 
  * of single perceptron unit. 
  * 
- * @author OlivÃ©rio 
+ * @author Olivério
  * 
  **/
 public class BinaryPerceptron extends PerceptronRule {

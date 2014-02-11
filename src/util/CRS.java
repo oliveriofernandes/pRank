@@ -1,5 +1,7 @@
 package util;
 
+import org.junit.Before;
+
 /**
  * This class comprises the Row Storage Storage format for sparse matrix. This
  * data structure was created only for storing the features attributes of the
@@ -7,7 +9,7 @@ package util;
  * relevance and so on, there is Example class. This CRS class is a composition
  * peace of the Example class.
  * 
- * @author OlivÃ©rio
+ * @author Olivério
  */
 
 public class CRS {
@@ -56,11 +58,9 @@ public class CRS {
 			this.numOfCol++;
 	}
 
-	/*
-	 * This constructor takes a effective sparse matrix and convert it to a CRS
-	 * object
-	 */
-	public CRS(double[][] matrix) {
+	/** This constructor takes a effective sparse matrix and convert it to a CRS
+	 * object */
+	public CRS (double[][] matrix) {
 		int totalNonZeros = 0; // total of nonzero numbers presented in the matrix
 		int index = 0; // index used for filling the vectors (values, colIndex and rowPtr)
 		this.strartWithZero = true;
@@ -112,12 +112,11 @@ public class CRS {
 		rowPtr[k] = index;
 	}
 
-	/*
-	 * takes a vector x and returns the product of the matrix stored in the CRS
+	/** takes a vector x and returns the product of the matrix stored in the CRS
 	 * object with x.
 	 */
+	//TESTED
 	public double dotProduct(CRS weight, int line) throws IndexOutOfBoundsException {
-		// create vector to save product
 		double dotProduct = 0;
 
 		// Find where the row starts
@@ -134,6 +133,28 @@ public class CRS {
 		} catch (IndexOutOfBoundsException exception) {
 			exception.printStackTrace();
 		}
+		return dotProduct;
+	}
+
+	//TESTED
+	public double dotProduct(double[] weight, int line) {
+		
+		if (weight.length != this.numOfCol)
+			throw new ArrayIndexOutOfBoundsException("Incompatible lengths! The weight.length = " 
+					+ weight.length + " and numOfCol = " + this.numOfCol);
+		
+		
+		double dotProduct = 0;
+
+		// Find where the row starts
+		int rowStart = rowPtr[line];
+
+		// Find where the next row starts
+		int nextRowStarts = rowPtr[line + 1];
+
+			for (int i = rowStart; i < nextRowStarts; i++)
+				dotProduct += values[i] * weight[colIndexes[i]];
+			
 		return dotProduct;
 	}
 
@@ -154,6 +175,7 @@ public class CRS {
 	}
 
 	// get the element in row i and column j in the matrix
+	//TESTED
 	public double getElement(int i, int j) throws IndexOutOfBoundsException{
 
 		if (strartWithZero) {

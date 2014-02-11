@@ -17,7 +17,7 @@ import java.util.Set;
  * it returns a Map (weightVectorsMap attribute) which keys are labels and values
  * are its synaptic weights vector for a Perceptron. 
  * 
- * @author OlivÃ©rio
+ * @author Olivério
  * 
  **/
 

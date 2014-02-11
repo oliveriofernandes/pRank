@@ -17,21 +17,19 @@ public class LoaderMSLR {
 		String path = System.getProperty("user.dir").concat(File.separator + "datasets" + File.separator + "MSLR-WEB10K"
 						+ File.separator + "Fold1" + File.separator + "sampleTrain.txt");
 
-		LoaderMSLR l = new LoaderMSLR();
-		l.getDataset(path);
+		getDataset(path);
 
 	}
 
-	/** Receive a path file, parses the dataset and returns a list containing the
-	 *  integer data set, preserving its relationship between queries ids, its
-	 *  correspondents feature vectors and the labels associated each query and
-	 *  feature vector, meaning this relevance.
+	/** Receive a path file, parses the data set and returns a list containing the
+	 *  entire data set, preserving the relationship between queries, its
+	 *  correspondents feature vectors and associate labels (which represent relevance).
 	 * 
-	 * @param path
-	 * @return
+	 * @param file path 
+	 * @return list of examples
 	 * @throws FileNotFoundException
 	 */
-	public static List<Example> getDataset(String path)	throws FileNotFoundException {
+	public static List<Example> getDataset(String path) {
 		//the Yi value
 		int label;
 		
@@ -40,23 +38,34 @@ public class LoaderMSLR {
 		
 		//index of the feature vector
 		int index;
+		
 		//value of each index on the feature vector
 		double value;
 		
-		/*The mapExample structure consists of the query id as key and a list with lots of TreeMaps which
-		/represents the associated documents (key as index of the feature vector and its corresponding value)
-		with the query */   
+		/* The mapExample structure consists of the query id as the key and a list with TreeMaps which
+		represent the associated documents with the query */   
 		Map<Integer, List<TreeMap<Integer, Double>>> mapExamples = new HashMap<Integer, List<TreeMap<Integer, Double>>>();
-		Scanner scanner = new Scanner(new File(path));
+		
+		Scanner scanner = null;
+
+		try {
+			scanner = new Scanner(new File(path));	
+		} catch (FileNotFoundException exception) {
+			System.out.println("The data set file wasn't found!" + '\n');
+			System.out.println("Please, check the correct path file");
+			exception.printStackTrace();
+		}
+		
+		
 
 		String[] strTokens;
 
 		while (scanner.hasNextLine()) {
 
-			///each TreeMap is a document (feature vector)
+			//Each TreeMap is a document (feature vector)
 			TreeMap<Integer, Double> map = new TreeMap<Integer, Double>();
 			
-			// Get the label value in the example
+			// Get the label value in the document
 			label = scanner.nextInt();
 
 			// Get the qId (query identifier) in the line
@@ -73,26 +82,28 @@ public class LoaderMSLR {
 				i++;
 			}
 			
-			// ON EACH LINE, ADD A DUMMI VALUE EQUALS 1
+			// ON EACH LINE, ADD A DUMMI VALUE EQUALS 1 - corresponds the weight zero on each example 
 			map.put(0, 1.0);
+			//This is a flag key that indicates the label value on the following code! 
 			map.put(-1, new Double(label));
+			
 			//if exists a query identifier in the map example, add a TreeMap (feature vector - document) in the 
 			//list of the associated documents 
 			if ((mapExamples.get(qId)) != null) {
 				mapExamples.get(qId).add(map);
-			} else {
+			} 
+			//Else put a query identifier as the key in the mapExample structure and associates with the new TreeMap (feature vector)  
+			else {
 				mapExamples.put(qId, new ArrayList<TreeMap<Integer, Double>>());
 				mapExamples.get(qId).add(map);
 			}
-
 		}
 		scanner.close();
 		return extractAttributes(mapExamples);
 	}
 
-	/**
-	 * Get a map with all examples in a data set which contains, for each request id, there is a list with lots of maps
-	 * with the corresponding documents.
+	/** Get a map with all examples in a data set which contains, for each request id,
+	 * there is a list with lots of maps with the corresponding documents.
 	 * 
 	 * @param mapExample
 	 * @return
