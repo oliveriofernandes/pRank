@@ -22,6 +22,8 @@ public class PerceptronRankTest {
 	
 	PerceptronRank pRank;
 	
+	double [] someWeigth;
+	
 	@Before
 	public void initilizeVariables() throws FileNotFoundException{
 		path = System.getProperty("user.dir").concat(
@@ -31,50 +33,82 @@ public class PerceptronRankTest {
 		examples = LoaderMSLR.getDataset(path);
 		
 		pRank = new PerceptronRank(examples.get(0),100);
+		
+		 someWeigth = new double [] {1, 0.09832155995514102, 0.5223706725932656, 0.4550145974401716, 0.6500069725514758, 0.6332587363766019,
+					0.5022201247236445, 0.013445420554406007, 0.8890241264343771, 0.45512480599250515, 0.5954926957290482,
+					0.5711563294573622, 0.920494448367657, 0.8690383958357528, 0.5919845073134994, 0.5088244900814023,
+					0.7286486732462323, 0.18457434253248017, 0.36621109520885897, 0.9275829510016793, 0.365487034653298,
+					0.8540908157693743, 0.7067662003235067, 0.5778451447223847, 0.4554505808222371, 0.10941709863979587,
+					0.2767697938175374, 0.14087533746204728, 0.7682088255109621, 0.12818253062203078, 0.0679847442885223,
+					0.13706142175430747, 0.9530997325107063, 0.0042311964169244876, 0.7434078744236359, 0.618635342279448,
+					0.8266104438681547, 0.5709809007397967, 0.07661795791001502, 0.7196256455176262, 0.18338785450086192,
+					0.4322494312716766, 0.2908897449386787, 0.08211559672428437, 0.9616203581842957, 0.39198435079284455,
+					0.47705945079401446, 0.15541938590062376, 0.7352331745767056, 0.8424977638958993, 0.4263540269476237,
+					0.3735781776696515, 0.928191759792568, 0.5702204863798062, 0.1528729444932504, 0.2566164926200446,
+					0.8503085347519664, 0.8686548297741351, 0.10013754309879241, 0.5522886828272164, 0.6393009484878448,
+					0.8101187744982506, 0.5271000693770346, 0.6375845901651849, 0.460449108425647, 0.021038982405877205,
+					0.8512306777586911, 0.5330516605912442, 0.8630537588424746, 0.3299634491107871, 0.789777369804572,
+					0.04803118357930258, 0.02199650227174954, 0.2131290772259593, 0.9850203891624404, 0.7711938967045656,
+					0.7030559823117035, 0.04933363296494098, 0.42531926708164025, 0.848300648186787, 0.18223483470916169,
+					0.8140251026247799, 0.3809769762018844, 0.7479016911565431, 0.022204414468064315, 0.9919361655329573,
+					0.7624227797315479, 0.5057282459893695, 0.5630754743077371, 0.16825502151509275, 0.7779409749396425,
+					0.2598182624483786, 0.22005437066780298, 0.9702380164709707, 0.5191506089992813, 0.2409577324124602,
+					0.19714660367125414, 0.7743341161115788, 0.6346663848487223, 0.7668079863305249, 0.023920187729960962,
+					0.8683040799375019, 0.5658487094947149, 0.20312837574992537, 0.40144373335974426, 0.5634829684019321,
+					0.9132766222177005, 0.3017928834412299, 0.2038649200096363, 0.08924687899342865, 0.3785544388037321,
+					0.8028379604389715, 0.12369753255754978, 0.9699103913274176, 0.3832890952472855, 0.6965686217445156,
+					0.37173544197223396, 0.9836942957983604, 0.9055518604585523, 0.08178796159189938, 0.046615257511794406,
+					0.7340675698115017, 0.2938650292462651, 0.12750541094372214, 0.2743990687926834, 0.3256817301656936,
+					0.8197300482269475, 0.2480169627274953, 0.9851518091714996, 0.6302795999946451, 0.5119406972229757,
+					0.23504061518466146, 0.2413382870660432, 0.15237458612443666};
 	}
 	
 	@Test
 	public void checkInitializingAttributes(){
+		//Nothing null attribute in the class after initialization
 		Assert.assertNotNull(pRank.example);
 		Assert.assertNotNull(pRank.weights);
 		Assert.assertNotNull(pRank.labels);
 		Assert.assertNotNull(pRank.thresholds);
 		Assert.assertNotNull(pRank.maxCount);
+		
+		//number of examples
+		assertEquals(4, pRank.example.offerings.numOfRows);
+		
+		//Label values and the total number of thresholds tested!  
+		int [] testValuesLabels = {0,1,2};
+		Assert.assertArrayEquals(testValuesLabels, pRank.labels);
+		Assert.assertEquals("Labels and Thresholds array lengths are equal", 
+				pRank.thresholds.length, pRank.labels.length);
 	}
-	
 	
 	@Test
 	public void testDocproduct(){
-		
-		for (int i = 0; i < pRank.example.offerings.numOfRows; i++) {
-			for (int j = 0; j < pRank.example.offerings.numOfCol; j++) {
-			
-				System.out.println(pRank.example.offerings.getElement(i, j));
-			}
-		}
-		
+		assertEquals(10940683.3396912, pRank.example.offerings.dotProduct(someWeigth, 0),0.00000005);
+		assertEquals(1151.53929927179, pRank.example.offerings.dotProduct(someWeigth, 1),0.00000005);
+		assertEquals(10940341.6043971, pRank.example.offerings.dotProduct(someWeigth, 2),0.00000005);
+		assertEquals(14040.2128900077, pRank.example.offerings.dotProduct(someWeigth, 3),0.00000005);
 	}
 	
 	@Test
 	public void testMinValueMethod(){
 		
 		
+		assertEquals(0,pRank.minThresholdValue(0));
+		assertEquals(0,pRank.minThresholdValue(1));
+		assertEquals(0,pRank.minThresholdValue(2));
+		assertEquals(0,pRank.minThresholdValue(3));
 		
+//		pRank.weights = someWeigth;
+//		pRank.thresholds[pRank.thresholds.length - 1] = Integer.MAX_VALUE;
+//		pRank.minThresholdValue(3);
+		
+		pRank.training();
 	}
 	
 	@Test
-	public void execute() throws FileNotFoundException {
+	public void execute() {
 
-		int [] testValuesLabels = {0,1,2};
-		
-		Assert.assertArrayEquals(testValuesLabels, pRank.labels);
-		
-		Assert.assertEquals("Labels and Thresholds array lengths are equal",
-				pRank.thresholds.length, pRank.labels.length);
-		
-		assertEquals(0, 0,0);
-		
-		
 		
 		
 

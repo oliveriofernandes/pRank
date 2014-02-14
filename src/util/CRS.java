@@ -1,7 +1,5 @@
 package util;
 
-import org.junit.Before;
-
 /**
  * This class comprises the Row Storage Storage format for sparse matrix. This
  * data structure was created only for storing the features attributes of the
@@ -9,7 +7,7 @@ import org.junit.Before;
  * relevance and so on, there is Example class. This CRS class is a composition
  * peace of the Example class.
  * 
- * @author Olivério
+ * @author Olivï¿½rio
  */
 
 public class CRS {
@@ -176,35 +174,35 @@ public class CRS {
 
 	// get the element in row i and column j in the matrix
 	//TESTED
-	public double getElement(int i, int j) throws IndexOutOfBoundsException{
+	public double getElement(int row, int col) throws IndexOutOfBoundsException{
 
 		if (strartWithZero) {
 
-			if ((i > this.numOfRows) || (j >= this.numOfCol)) {
+			if ((row > this.numOfRows) || (col >= this.numOfCol)) {
 				throw new IndexOutOfBoundsException();
 
 			}
 		} else {
-			if ((i > this.numOfRows) || (j > this.numOfCol)) {
+			if ((row > this.numOfRows) || (col > this.numOfCol)) {
 				throw new IndexOutOfBoundsException();
 
 			}
 		}		
 		
 		// Find where the row starts
-		int startRow = rowPtr[i];
+		int startRow = rowPtr[row];
 
 		// Find where the next row starts
-		int nextStartRow = rowPtr[i + 1];
+		int nextStartRow = rowPtr[row + 1];
 
 		// Scan the column indices of entries in row i
 		for (int k = startRow; k < nextStartRow; k++) {
 			// if j is the column index of a non-zero, then return it
-			if (colIndexes[k] == j)
+			if (colIndexes[k] == col)
 				return values[k];
 
 			// if it has passed j, then entry (i,j) must be a zero
-			if (colIndexes[k] > j)
+			if (colIndexes[k] > col)
 				return 0;
 		}
 
